@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -71,5 +73,9 @@ public class Driver {
     @Pattern(regexp = "^(pending|available|busy)$")  // new attribute
     private String status;
 
+
+    //---------------------------------------------------------
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "driver")
+    private Set<Trip> trips;
 
 }

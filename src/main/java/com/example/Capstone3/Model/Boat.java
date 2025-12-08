@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -56,5 +58,11 @@ public class Boat {
     @ManyToOne
     @JsonIgnore
     private Category category;
+
+
+    //--------------------------------------------------
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "boat")
+    private Set<Trip> tripSet;
+
 
 }

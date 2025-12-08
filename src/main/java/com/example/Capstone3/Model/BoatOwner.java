@@ -68,4 +68,9 @@ public class BoatOwner {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Boat> boats = new HashSet<>();
+
+    //--------------------------------------------------
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "boatOwner")
+    private Set<Trip> tripSet;
+
 }
