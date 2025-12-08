@@ -44,5 +44,5 @@ public class Category {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<Boat> boats = new HashSet<>();
+    private Set<Boat> boats ;
 }
