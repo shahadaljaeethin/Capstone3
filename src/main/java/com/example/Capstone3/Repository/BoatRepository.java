@@ -9,4 +9,6 @@ public interface BoatRepository extends JpaRepository<Boat,Integer> {
 
     Boat findBoatById(Integer id);
 
+
+
 }

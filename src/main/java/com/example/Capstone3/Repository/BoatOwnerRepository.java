@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BoatOwnerRepository extends JpaRepository<BoatOwner,Integer> {
     BoatOwner findBoatOwnersById(Integer id);
+
 }
