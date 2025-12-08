@@ -1,14 +1,13 @@
 package com.example.Capstone3.Model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -50,6 +49,9 @@ public class Customer {
     @Pattern(regexp = "^05[0-9]{8}$",message = "*phone number must start with 05xxxxxx")
     @Column(columnDefinition = "varchar(10) not null unique")
     private String phoneNumber;
+
+    @PastOrPresent
+    private LocalDate registerDate;
 
     private Emergency contact;
 
