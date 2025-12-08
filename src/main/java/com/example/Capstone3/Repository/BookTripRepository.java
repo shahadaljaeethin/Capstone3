@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface BookTripRepository extends JpaRepository<BookTrip, Integer> {
 
     BookTrip findBookTripById(Integer id);
+
 }

@@ -67,5 +67,5 @@ public class BoatOwner {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<Boat> boats = new HashSet<>();
+    private Set<Boat> boats ;
 }
