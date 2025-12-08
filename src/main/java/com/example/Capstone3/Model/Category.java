@@ -44,4 +44,6 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Boat> boats ;
+
+
 }
