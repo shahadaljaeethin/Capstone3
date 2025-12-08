@@ -57,5 +57,4 @@ public class Boat {
     @JsonIgnore
     private Category category;
 
-
 }

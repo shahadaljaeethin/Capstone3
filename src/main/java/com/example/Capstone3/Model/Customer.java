@@ -1,5 +1,6 @@
 package com.example.Capstone3.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -56,5 +58,12 @@ public class Customer {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "customer")
     @PrimaryKeyJoinColumn
     private Emergency contact;
+
+
+    //-------------------------------------------------
+
+    @OneToMany(cascade = CascadeType.ALL ,mappedBy = "customer")
+    @JsonIgnore
+    private Set<BookTrip> bookTripSet;
 
 }
