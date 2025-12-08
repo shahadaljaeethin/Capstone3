@@ -1,5 +1,6 @@
 package com.example.Capstone3.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -39,5 +40,8 @@ public class Emergency {
 
     private Trip trip;
 
+    @OneToOne
+    @MapsId
+    @JsonIgnore
     private Customer customer;
 }

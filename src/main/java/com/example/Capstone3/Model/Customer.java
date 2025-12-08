@@ -53,6 +53,8 @@ public class Customer {
     @PastOrPresent
     private LocalDate registerDate;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "customer")
+    @PrimaryKeyJoinColumn
     private Emergency contact;
 
 }
