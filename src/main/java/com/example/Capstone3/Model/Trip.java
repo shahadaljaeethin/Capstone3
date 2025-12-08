@@ -75,6 +75,7 @@ public class Trip {
     @JsonIgnore
     private Set<BookTrip> bookTripSet;
 
+
     @ManyToOne
     @JsonIgnore
     private Boat boat;
