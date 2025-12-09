@@ -19,6 +19,8 @@ public class BookTripService {
     private final BookTripRepository bookTripRepository;
     private final TripRepository tripRepository;
     private final CustomerRepository customerRepository;
+    private final SendMailService sendMailService;
+
 
     public List<BookTrip> getBookTrip(){
         return bookTripRepository.findAll();
@@ -58,4 +60,95 @@ public class BookTripService {
         }
         bookTripRepository.delete(bookTrip);
     }
+
+
+    public void acceptBooking(Integer ownerId, Integer bookTripId) {
+
+        BookTrip bookTrip = bookTripRepository.findBookTripById(bookTripId);
+        if (bookTrip == null) {
+            throw new ApiException("Booking not found");
+        }
+
+        Trip trip = bookTrip.getTrip();
+        if (trip == null || trip.getBoatOwner() == null) {
+            throw new ApiException("Trip or owner not found");
+        }
+
+        if (!trip.getBoatOwner().getId().equals(ownerId)) {
+            throw new ApiException("You are not allowed to accept this booking");
+        }
+
+        if ("ACCEPTED".equals(bookTrip.getStatus())) {
+            throw new ApiException("Booking already accepted");
+        }
+
+        bookTrip.setStatus("ACCEPTED");
+        bookTripRepository.save(bookTrip);
+
+        Customer customer = bookTrip.getCustomer();
+
+        if (customer != null && customer.getEmail() != null) {
+
+            String subject = "Booking Accepted ✅";
+
+            String body =
+                    "Hello " + customer.getName() + ",\n\n" +
+                            "Your booking for the trip:\n" +
+                            trip.getTitle() + "\n\n" +
+                            "Has been ACCEPTED successfully ✅\n\n" +
+                            "Trip Details:\n" +
+                            "- Start: " + trip.getStartDate() + "\n" +
+                            "- From: " + trip.getStartLocation() + "\n" +
+                            "- To: " + trip.getDestinationLocation() + "\n\n" +
+                            "Enjoy your trip 🌊🚤";
+
+            sendMailService.sendMessage(customer.getEmail(), subject, body);
+        }
+    }
+
+
+    public void rejectBooking(Integer ownerId, Integer bookTripId) {
+
+        BookTrip bookTrip = bookTripRepository.findBookTripById(bookTripId);
+        if (bookTrip == null) {
+            throw new ApiException("Booking not found");
+        }
+
+        Trip trip = bookTrip.getTrip();
+        if (trip == null || trip.getBoatOwner() == null) {
+            throw new ApiException("Trip or owner not found");
+        }
+
+        if (!trip.getBoatOwner().getId().equals(ownerId)) {
+            throw new ApiException("You are not allowed to reject this booking");
+        }
+
+        if ("REJECTED".equals(bookTrip.getStatus())) {
+            throw new ApiException("Booking already rejected");
+        }
+
+        bookTrip.setStatus("REJECTED");
+        bookTripRepository.save(bookTrip);
+
+        Customer customer = bookTrip.getCustomer();
+
+        if (customer != null && customer.getEmail() != null) {
+
+            String subject = "Booking Rejected ❌";
+
+            String body =
+                    "Hello " + customer.getName() + ",\n\n" +
+                            "Unfortunately, your booking for the trip:\n" +
+                            trip.getTitle() + "\n\n" +
+                            "Has been REJECTED ❌\n\n" +
+                            "You can try again with another trip.\n\n" +
+                            "Thank you for using our system.";
+
+            sendMailService.sendMessage(customer.getEmail(), subject, body);
+        }
+    }
+
+
+
+
 }

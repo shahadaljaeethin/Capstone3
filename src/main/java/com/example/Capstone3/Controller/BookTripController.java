@@ -37,4 +37,22 @@ public class BookTripController {
         bookTripService.deleteBookTrip(id);
         return ResponseEntity.status(200).body(new ApiResponse("Book trip deleted successfully"));
     }
+
+
+
+
+    @PutMapping("/accept/{ownerId}/{bookTripId}")
+    public ResponseEntity<?> acceptBooking(@PathVariable Integer ownerId, @PathVariable Integer bookTripId) {
+        bookTripService.acceptBooking(ownerId, bookTripId);
+        return ResponseEntity.status(200).body("Booking accepted successfully");
+    }
+
+
+    @PutMapping("/reject/{ownerId}/{bookTripId}")
+    public ResponseEntity<?> rejectBooking(@PathVariable Integer ownerId, @PathVariable Integer bookTripId) {
+        bookTripService.rejectBooking(ownerId, bookTripId);
+        return ResponseEntity.status(200).body("Booking rejected successfully");
+    }
+
+
 }

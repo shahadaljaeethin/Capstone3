@@ -29,63 +29,66 @@ public class AiService {
         }
 
         String systemPrompt = """
-                You are an AI assistant for sea trip route planning.
-                Your job is to give smart and realistic route advice,
-                timing suggestions, safety tips, and experience improvements.
+            You are an AI assistant for sea trip route planning.
 
-                You MUST return ONLY valid JSON.
-                Do NOT add any explanation text.
+            The trip description provided by the system is accurate and detailed.
+            You MUST rely heavily on the description to understand:
+            - the purpose of the trip
+            - the type of guests
+            - the desired experience (relaxing, fishing, sunset, family, etc.)
 
-                JSON format:
-                {
-                  "tripId": <int>,
-                  "shortSummary": "<2–3 sentence summary>",
-                  "routeSuggestions": [
-                    "<main route suggestion>",
-                    "<alternative route>"
-                  ],
-                  "timeSuggestions": [
-                    "<best departure time advice>",
-                    "<trip duration advice>"
-                  ],
-                  "safetyTips": [
-                    "<safety tip 1>",
-                    "<safety tip 2>"
-                  ],
-                  "extraIdeas": [
-                    "<optional activities or stops>"
-                  ]
-                }
-                """;
+            You MUST return ONLY valid JSON.
+            Do NOT add any explanation text.
+
+            JSON format:
+            {
+              "tripId": <int>,
+              "shortSummary": "<2–3 sentence summary>",
+              "routeSuggestions": [
+                "<main route suggestion>",
+                "<alternative route>"
+              ],
+              "timeSuggestions": [
+                "<best departure time advice>",
+                "<trip duration advice>"
+              ],
+              "safetyTips": [
+                "<safety tip 1>",
+                "<safety tip 2>"
+              ],
+              "extraIdeas": [
+                "<optional activities or stops>"
+              ]
+            }
+            """;
 
         StringBuilder userPrompt = new StringBuilder();
 
+        // ✅ Trip info فقط (بدون Boat)
         userPrompt.append("Trip info:\n");
-        userPrompt.append("id=").append(trip.getId())
-                .append(", title=").append(trip.getTitle())
-                .append(", tripType=").append(trip.getTripType())
-                .append(", fishingGear=").append(trip.isFishingGear())
-                .append(", startDate=").append(trip.getStartDate())
-                .append(", endDate=").append(trip.getEndDate())
-                .append(", startLocation=").append(trip.getStartLocation())
-                .append(", destinationLocation=").append(trip.getDestinationLocation())
-                .append(", endLocation=").append(trip.getEndLocation())
-                .append(", status=").append(trip.getStatus())
-                .append(", totalPrice=").append(trip.getTotalPrice())
-                .append("\n");
+        userPrompt.append("id=").append(trip.getId()).append("\n");
+        userPrompt.append("title=").append(trip.getTitle()).append("\n");
+        userPrompt.append("type=").append(trip.getTripType()).append("\n");
+        userPrompt.append("description=").append(trip.getDescription()).append("\n");
+        userPrompt.append("fishingGear=").append(trip.isFishingGear()).append("\n");
+        userPrompt.append("startLocation=").append(trip.getStartLocation()).append("\n");
+        userPrompt.append("destinationLocation=").append(trip.getDestinationLocation()).append("\n");
+        userPrompt.append("endLocation=").append(trip.getEndLocation()).append("\n");
+        userPrompt.append("startDate=").append(trip.getStartDate()).append("\n");
+        userPrompt.append("endDate=").append(trip.getEndDate()).append("\n");
+        userPrompt.append("status=").append(trip.getStatus()).append("\n");
+        userPrompt.append("totalPrice=").append(trip.getTotalPrice()).append("\n\n");
 
         userPrompt.append("""
-                Based on this trip data, suggest:
-                - best sea route
-                - best time
-                - safety tips
-                - experience ideas
-                """);
+            Use the description to shape the experience and tone of the trip,
+            and use the locations and dates to plan a realistic route and timing.
+            """);
 
         try {
             String aiResponse = aiClient.callOpenAi(systemPrompt, userPrompt.toString());
 
-            TripRouteAdviceDTO dto = objectMapper.readValue(aiResponse, TripRouteAdviceDTO.class);
+            TripRouteAdviceDTO dto =
+                    objectMapper.readValue(aiResponse, TripRouteAdviceDTO.class);
 
             if (dto.getTripId() == null) {
                 dto.setTripId(trip.getId());
@@ -97,6 +100,8 @@ public class AiService {
             throw new ApiException("Failed to parse AI JSON: " + e.getMessage());
         }
     }
+
+
 
     public TripSafetyGuideDTO getGeneralTripSafetyGuide() {
 

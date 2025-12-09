@@ -28,10 +28,10 @@ public class Trip {
     @Column(columnDefinition = "varchar(80) not null")
     private String title;
 
-    @NotEmpty
-    @Size(max = 400, message = "*description too long (max 400 characters)")
-    @Column(columnDefinition = "varchar(400)")
+    @NotEmpty(message = "Description cannot be empty")
+    @Column(columnDefinition = "varchar(400) not null")
     private String description;
+
 
 
     @NotEmpty(message = "Full name cannot be empty")
