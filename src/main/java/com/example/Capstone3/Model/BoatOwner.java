@@ -60,9 +60,11 @@ public class BoatOwner {
     private String licenseNumber;
 
     @NotEmpty(message = "*enter status")
-    @Pattern(regexp = "^(ACTIVE|INACTIVE|SUSPENDED)$", message = "*status must be ACTIVE, INACTIVE or SUSPENDED")
-    @Column(columnDefinition = "varchar(20) not null")
-    private String status;
+    @Pattern(regexp = "^(PENDING|ACTIVE|INACTIVE)$", message = "*status must be PENDING, ACTIVE or INACTIVE")
+    @Column(columnDefinition = "varchar(20) not null default 'PENDING'")
+    private String status = "PENDING";
+
+
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     @JsonIgnore

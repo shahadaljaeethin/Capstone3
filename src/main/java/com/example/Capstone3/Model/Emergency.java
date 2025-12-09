@@ -38,10 +38,6 @@ public class Emergency {
     @Column(columnDefinition = "varchar(255)")
     private String lastKnownLocation;
 
-//-------------------------------------------
-    @OneToOne
-    @MapsId
-    @JsonIgnore
     private Trip trip;
 
     @OneToOne

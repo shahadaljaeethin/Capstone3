@@ -16,6 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Table
 public class Customer {
 
     @Id
@@ -59,8 +60,12 @@ public class Customer {
     @PrimaryKeyJoinColumn
     private Emergency contact;
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Review> reviews;
 
-    //-------------------------------------------------
+
+//-------------------------------------------------
 
     @OneToMany(cascade = CascadeType.ALL ,mappedBy = "customer")
     @JsonIgnore

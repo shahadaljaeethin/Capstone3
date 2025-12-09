@@ -19,12 +19,11 @@ import java.util.Set;
 public class Boat {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotEmpty(message = "*enter boat name")
     @Size(min = 3, max = 50, message = "*name size 3-50 characters")
-    @Pattern(regexp = "^[A-Za-z0-9 ]+$", message = "*name can contains letters, digits and spaces only")
+    @Pattern(regexp = "^[A-Za-z0-9 ]+$", message = "*name can contain letters, digits and spaces only")
     @Column(columnDefinition = "varchar(50) not null")
     private String name;
 
@@ -40,26 +39,31 @@ public class Boat {
 
     @NotNull(message = "*enter price per hour")
     @Positive(message = "*price per hour must be positive")
-    @Column(columnDefinition = "double not null")
-    private Double pricePerHour;
+    @Column(columnDefinition = "int not null")
+    private Integer pricePerHour;
 
     @NotEmpty(message = "*enter status")
-    @Pattern(regexp = "^(AVAILABLE|NOT_AVAILABLE|MAINTENANCE)$", message = "*status must be AVAILABLE, NOT_AVAILABLE or MAINTENANCE")
-    @Column(columnDefinition = "varchar(20) not null")
-    private String status;
+    @Pattern(
+            regexp = "^(AVAILABLE|NOT_AVAILABLE|MAINTENANCE)$",
+            message = "*status must be AVAILABLE, NOT_AVAILABLE or MAINTENANCE"
+    )
+    @Column(columnDefinition = "varchar(20) not null default 'AVAILABLE'")
+    private String status = "AVAILABLE";
 
     @NotNull(message = "*select owner")
     @ManyToOne
-    @JsonIgnore
     private BoatOwner owner;
-
 
     @NotNull(message = "*select category")
     @ManyToOne
-    @JsonIgnore
     private Category category;
 
-    //--------------------------------------------------
+    @OneToMany(mappedBy = "boat", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Review> reviews;
+
+
+//--------------------------------------------------
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "boat")
     private Set<Trip> tripSet;
 
