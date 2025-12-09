@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -38,11 +38,11 @@ public class Trip {
 
     @NotNull(message = "Start date cannot be empty" )
     @Column(columnDefinition = "dateTime not null")
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
     @NotNull(message = "End date cannot be empty" )
     @Column(columnDefinition = "dateTime not null")
-    private LocalDate endDate;
+    private LocalDateTime endDate;
 
     @NotEmpty(message = "Start location cannot be empty" )
     @Column(columnDefinition = "varchar(90) not null")

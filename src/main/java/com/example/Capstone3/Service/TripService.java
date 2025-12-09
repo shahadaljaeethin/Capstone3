@@ -12,6 +12,7 @@ import com.example.Capstone3.Repository.TripRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -28,10 +29,9 @@ public class TripService {
         return tripRepository.findAll();
     }
 
-    // هل اخلي ال boat owner يدخل ال id حقه هنا ك path variable
-    public void addTrip(Trip trip){
-        Boat boat = boatRepository.findBoatById(trip.getBoat().getId());
-        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(trip.getBoatOwner().getId());
+    public void addTrip(Integer boatOwnerId, Integer boatId , Trip trip){
+        Boat boat = boatRepository.findBoatById(boatId);
+        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(boatOwnerId);
         if(boat == null || boatOwner == null){
             throw  new ApiException("Boat or boat owner not found");
         }
@@ -41,17 +41,10 @@ public class TripService {
         if(!boatOwner.getBoats().contains(trip.getBoat())){
             throw new ApiException("The boat owner cannot add this trip because he does not have the appropriate boat");
         }
-        //باقي حساب total price
-        tripRepository.save(trip);
-    }
-
-    public void assignBoatToTrip(Integer boatId, Integer tripId){
-        Boat boat = boatRepository.findBoatById(boatId);
-        Trip trip = tripRepository.findTripById(tripId);
-        if(boat == null || trip == null){
-            throw new ApiException("Boat or Trip not found");
-        }
         trip.setBoat(boat);
+        trip.setBoatOwner(boatOwner);
+        Long DurationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
+        trip.setTotalPrice(DurationHours*trip.getBoat().getPricePerHour());
         tripRepository.save(trip);
     }
 
@@ -62,6 +55,8 @@ public class TripService {
             throw new ApiException("Driver or Trip not found");
         }
         trip.setDriver(driver);
+        Long durationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
+        trip.setTotalPrice(trip.getTotalPrice()+durationHours*driver.getHourlyWage());
         tripRepository.save(trip);
     }
 
