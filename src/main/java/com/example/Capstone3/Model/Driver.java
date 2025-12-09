@@ -73,6 +73,9 @@ public class Driver {
     @Pattern(regexp = "^(pending|available|busy)$")  // new attribute
     private String status;
 
+    @NotEmpty(message = "*enter city")
+    private String city;
+
 
     //---------------------------------------------------------
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "driver")
