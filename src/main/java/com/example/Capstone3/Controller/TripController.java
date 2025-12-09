@@ -26,6 +26,18 @@ public class TripController {
         return ResponseEntity.status(200).body(new ApiResponse("Trip added successfully"));
     }
 
+    @PutMapping("/assign-boat-trip/{boatId}/{tripId}")
+    public ResponseEntity<?> assignBoatToTrip(@PathVariable Integer boatId, @PathVariable Integer tripId){
+        tripService.assignBoatToTrip(boatId, tripId);
+        return ResponseEntity.status(200).body(new ApiResponse("Boat assigned successfully to trip "));
+    }
+
+    @PutMapping("/assign-driver-trip/{driverId}/{tripId}")
+    public ResponseEntity<?> assignDriverToTrip(@PathVariable Integer driverId, @PathVariable Integer tripId){
+        tripService.assignDriverToTrip(driverId, tripId);
+        return ResponseEntity.status(200).body(new ApiResponse("Driver assigned successfully to trip "));
+    }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateTrip(@PathVariable Integer id,@RequestBody @Valid Trip trip){
         tripService.updateTrip(id, trip);
