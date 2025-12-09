@@ -27,7 +27,7 @@ public class TripService {
 
     public void addTrip(Trip trip){
         Boat boat = boatRepository.findBoatById(trip.getBoat().getId());
-        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnersById(trip.getBoatOwner().getId());
+        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(trip.getBoatOwner().getId());
         if(boat == null || boatOwner == null){
             throw  new ApiException("Boat or boat owner not found");
         }
@@ -47,7 +47,7 @@ public class TripService {
             throw new ApiException("Trip not found");
         }
         Boat boat = boatRepository.findBoatById(trip.getBoat().getId());
-        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnersById(trip.getBoatOwner().getId());
+        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(trip.getBoatOwner().getId());
         if(boat == null || boatOwner == null){
             throw  new ApiException("Boat or boat owner not found");
         }
