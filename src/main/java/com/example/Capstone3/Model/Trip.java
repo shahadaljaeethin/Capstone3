@@ -32,15 +32,15 @@ public class Trip {
     @Column(columnDefinition = "varchar(80) not null")
     private String tripType;
 
-    @NotEmpty(message = "Fishing gear cannot be empty")
-    @Column(columnDefinition = "TINYINT not null")
+    @NotNull(message = "Fishing gear cannot be empty")
+//    @Column(columnDefinition = "TINYINT not null")
     private boolean fishingGear;
 
-    @NotEmpty(message = "Start date cannot be empty" )
+    @NotNull(message = "Start date cannot be empty" )
     @Column(columnDefinition = "dateTime not null")
     private LocalDate startDate;
 
-    @NotEmpty(message = "End date cannot be empty" )
+    @NotNull(message = "End date cannot be empty" )
     @Column(columnDefinition = "dateTime not null")
     private LocalDate endDate;
 
@@ -65,6 +65,10 @@ public class Trip {
     private Double totalPrice;
 
 //---------------------Relations-----------------------------
+
+    @OneToOne(cascade = CascadeType.ALL , mappedBy = "trip")
+    @PrimaryKeyJoinColumn
+    private Emergency emergency;
 
     @ManyToOne
     @JoinColumn
