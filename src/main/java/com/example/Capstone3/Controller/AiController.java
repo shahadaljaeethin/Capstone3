@@ -26,4 +26,16 @@ public class AiController {
         return ResponseEntity.status(200).body(guide);
     }
 
+//--------------------------------------------------------------
+
+    @GetMapping("/trip-summary/{tripId}")
+    public ResponseEntity<?> getTripSummary(@PathVariable Integer tripId) {
+        return ResponseEntity.status(200).body(aiService.getTripInfoSummary(tripId));
+    }
+
+    @GetMapping("/suggest-trips-by-fish/{fishType}")
+    public ResponseEntity<?> suggestTripsByFish(@PathVariable String fishType) {
+        return ResponseEntity.status(200).body(aiService.getTripsByFishType(fishType));
+    }
+
 }

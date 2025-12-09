@@ -23,11 +23,11 @@ public class DriverRequest {
     @Size(min = 8, max = 400,message = "*message length range 8-400character")
     private String message;
 
-    @Pattern(regexp = "^(pending|accept|appologize)$")
+    @Pattern(regexp = "^(pending|accept|apologize)$")
     private String status;
 
     @ManyToOne
-        private BoatOwner owner;
+    private BoatOwner owner;
 
     @ManyToOne
     private Driver driver;

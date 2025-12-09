@@ -13,7 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +56,7 @@ public class TripService {
         if(driver == null || trip == null){
             throw new ApiException("Driver or Trip not found");
         }
+
 //        trip.setDriver(driver);
 //        Long durationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
 //        trip.setTotalPrice(trip.getTotalPrice()+durationHours*driver.getHourlyWage());
@@ -99,7 +101,85 @@ public class TripService {
         }
         tripRepository.delete(trip);
     }
+//===============================================================================================
+public Map<Trip, Timer> timers = new HashMap<>();
+
+public void startTrip(Integer tripId,Integer ownerId){
+BoatOwner owner = boatOwnerRepository.findBoatOwnerById(ownerId);
+Trip trip = tripRepository.findTripById(tripId);
+if(trip==null||owner==null) throw new ApiException("owner or trip not found");
+if(owner!=trip.getBoatOwner()) throw new ApiException("Authorization failed: this trip belongs to another owner"); //review this line
+
+if(!trip.getStatus().equals("Upcoming"))throw new ApiException("trip is not in Upcoming state");
+
+trip.setStatus("Ongoing");
+tripRepository.save(trip);
+//start timer to date
+    Timer timer = new Timer();
+    timers.put(trip, timer);
+
+    //calculate timer seconds from endDate
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime end = trip.getEndDate();
+    long delayMillis = Duration.between(now, end).toMillis();
+    if (delayMillis<=0)  throw new ApiException("");
+
+    timer.schedule(new TimerTask() {
+        @Override
+        public void run() {
+            System.out.println("Times out");
+            //call emergency
+
+        }
+    }, delayMillis * 1000);
+}
 
 
+public void endTrip(Integer tripId,Integer ownerId){
+
+    BoatOwner owner = boatOwnerRepository.findBoatOwnerById(ownerId);
+    Trip trip = tripRepository.findTripById(tripId);
+    if(trip==null||owner==null) throw new ApiException("owner or trip not found");
+    if(owner!=trip.getBoatOwner()) throw new ApiException("Authorization failed: this trip belongs to another owner"); //review this line
+
+    if(!trip.getStatus().equals("Ongoing"))throw new ApiException("trip is not in Ongoing state");
+
+    trip.setStatus("Completed");
+    tripRepository.save(trip);
+
+    //stop the timer
+    if(timers.get(trip)!=null){
+        Timer timer = timers.get(trip);
+        timer.cancel();
+        timer.purge();
+        timers.remove(timer);}
+
+}
+
+
+public ArrayList<Trip> recommendationTrips(String prompt){
+ArrayList<Trip> aiRecommendations = new ArrayList<>();
+    //fix repo
+    if(tripRepository.findTripByStatus("Upcoming").isEmpty()) return aiRecommendations;
+
+    // 1> create DTO for available trips to AI
+    List<Trip> availableTrips = tripRepository.findTripByStatus("Upcoming");
+
+
+    // 2> send prompt
+    prompt = "I want you to recommend me suitable cruise of these available trips, I want you to select the potential trip, so it could be one or more of potential trip that I am looking for " +
+
+            "please answer me with trip Ids only separated by - , for example : 2-4-7-15 " +
+            "if there is no trip that are potential i am looking for from given list, I want you to reply me with -1 " +
+            "be direct and don't answer me anything but the final result for example 2-4-7-15 or -1 ,,, here is the list:" + " and here is description of my preferences : "+prompt;
+
+
+    // 3> read result
+
+
+
+
+return aiRecommendations;
+}
 
 }

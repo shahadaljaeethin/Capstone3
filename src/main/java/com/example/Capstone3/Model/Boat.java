@@ -60,7 +60,6 @@ public class Boat {
     @Column(columnDefinition = "varchar(300)")
     private String description;
 
-
     @OneToMany(mappedBy = "boat", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Review> reviews;

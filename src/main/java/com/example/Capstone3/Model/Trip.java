@@ -69,7 +69,7 @@ public class Trip {
     private String status;
 
     @Column(columnDefinition = "bigint") //int
-    private long totalPrice;
+    private Long totalPrice;
 
 //---------------------Relations-------------------------------
 

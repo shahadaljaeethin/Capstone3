@@ -1,6 +1,8 @@
 package com.example.Capstone3.Service;
 
 import com.example.Capstone3.Api.ApiException;
+import com.example.Capstone3.DTO.SuggestedTripsBasedOnFishDTO;
+import com.example.Capstone3.DTO.TripInfoSummaryDTO;
 import com.example.Capstone3.DTO.TripRouteAdviceDTO;
 import com.example.Capstone3.DTO.TripSafetyGuideDTO;
 import com.example.Capstone3.Model.Trip;
@@ -8,6 +10,8 @@ import com.example.Capstone3.Repository.TripRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -137,5 +141,114 @@ public class AiService {
             throw new ApiException("Failed to generate safety guide: " + e.getMessage());
         }
     }
+
+//--------------------------------------------------------
+
+    public TripInfoSummaryDTO getTripInfoSummary(Integer tripId) {
+
+        Trip trip = tripRepository.findTripById(tripId);
+        if (trip == null) {
+            throw new ApiException("Trip not found");
+        }
+
+        String systemPrompt = """
+            You are an AI assistant specialized in providing informative summaries
+            about sea trip destinations.
+
+            You MUST return ONLY valid JSON.
+            No explanations or extra text.
+
+            JSON format:
+            {
+              "tripId": <int>,
+              "regionSummary": "<what this region is known for>",
+              "famousFor": "<key highlights of the area>",
+              "popularFishTypes": "<famous fish types in this region>",
+              "tripExperience": "<expected experience based on this trip type>"
+            }
+            """;
+
+        String userPrompt = """
+            Trip destination: """ + trip.getDestinationLocation() + """
+            Trip type: """ + trip.getTripType() + """
+
+            Provide:
+            - What this destination is known for
+            - Popular fish species in this area
+            - Characteristics of this region
+            - Expected experience for this trip type
+            """;
+
+        try {
+            String aiResponse = aiClient.callOpenAi(systemPrompt, userPrompt);
+
+            TripInfoSummaryDTO dto = objectMapper.readValue(aiResponse, TripInfoSummaryDTO.class);
+
+            if (dto.getTripId() == null) {
+                dto.setTripId(trip.getId());
+            }
+
+            return dto;
+
+        } catch (Exception e) {
+            throw new ApiException("Failed to generate destination summary: " + e.getMessage());
+        }
+    }
+
+
+    public SuggestedTripsBasedOnFishDTO getTripsByFishType(String fishType) {
+
+        List<Trip> trips = tripRepository.findAll();
+        if (trips.isEmpty()) {
+            throw new ApiException("No trips found in the database");
+        }
+
+        // Convert trips into a simple text list for the AI
+        StringBuilder tripListPrompt = new StringBuilder();
+        tripListPrompt.append("Here are all trips:\n");
+
+        for (Trip trip : trips) {
+            tripListPrompt.append("Trip ID: ").append(trip.getId())
+                    .append(", Destination: ").append(trip.getDestinationLocation())
+                    .append(", Trip Type: ").append(trip.getTripType())
+                    .append(", Fishing Gear: ").append(trip.isFishingGear())
+                    .append("\n");
+        }
+
+        String systemPrompt = """
+            You are an AI fishing expert.
+            Your task is to analyze all available trips and select those that are suitable 
+            for catching a specific type of fish.
+
+            You MUST return ONLY valid JSON.
+            No explanations, no extra comments.
+
+            JSON format:
+            {
+              "fishType": "<fish name>",
+              "recommendedTripIds": [<tripId1>, <tripId2>, ...],
+              "reasons": [
+                 "<reason why these trips match>",
+                 "<extra helpful notes>"
+              ]
+            }
+            """;
+
+        String userPrompt = tripListPrompt +
+                "\nGiven the fish type: " + fishType + "\n" +
+                "Select the best trips whose destination is well-known for this fish type. Return only the trip IDs.";
+
+        try {
+            String aiResponse = aiClient.callOpenAi(systemPrompt, userPrompt);
+
+            SuggestedTripsBasedOnFishDTO dto = objectMapper.readValue(aiResponse, SuggestedTripsBasedOnFishDTO.class);
+
+            return dto;
+
+        } catch (Exception e) {
+            throw new ApiException("Failed to generate trip fishing suggestions: " + e.getMessage());
+        }
+    }
+
 
 }

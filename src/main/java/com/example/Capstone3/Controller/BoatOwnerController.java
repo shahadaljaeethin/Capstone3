@@ -1,5 +1,6 @@
 package com.example.Capstone3.Controller;
 
+import com.example.Capstone3.Api.ApiResponse;
 import com.example.Capstone3.Model.BoatOwner;
 import com.example.Capstone3.Service.BoatOwnerService;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +35,11 @@ public class BoatOwnerController {
     public ResponseEntity<?> deleteOwner(@PathVariable Integer id){
         boatOwnerService.deleteOwner(id);
         return ResponseEntity.status(200).body("Owner deleted successfully");
+    }
+
+    @PutMapping("/activate-account/{adminId}/{boatOwnerId}")
+    public ResponseEntity<?> activateAccount(@PathVariable Integer adminId , @PathVariable Integer boatOwnerId){
+        boatOwnerService.activateAccount(adminId, boatOwnerId);
+        return ResponseEntity.status(200).body(new ApiResponse("Boat owner account activated successfully"));
     }
 }

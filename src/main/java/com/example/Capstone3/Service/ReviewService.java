@@ -25,7 +25,6 @@ public class ReviewService {
     }
 
     public void addReview(Integer boatId, Integer customerId, Review review) {
-
         Boat boat = boatRepository.findBoatById(boatId);
         if (boat == null) {
             throw new ApiException("Boat not found");
@@ -63,7 +62,6 @@ public class ReviewService {
     }
 
     public void deleteReview(Integer reviewId) {
-
         Review review = reviewRepository.findById(reviewId).orElse(null);
 
         if (review == null) {
@@ -71,6 +69,5 @@ public class ReviewService {
         }
 
         reviewRepository.delete(review);
-
     }
 }

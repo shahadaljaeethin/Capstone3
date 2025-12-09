@@ -1,7 +1,9 @@
 package com.example.Capstone3.Service;
 
 import com.example.Capstone3.Api.ApiException;
+import com.example.Capstone3.Model.Admin;
 import com.example.Capstone3.Model.BoatOwner;
+import com.example.Capstone3.Repository.AdminRepository;
 import com.example.Capstone3.Repository.BoatOwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.List;
 public class BoatOwnerService {
 
     private final BoatOwnerRepository boatOwnerRepository;
+    private final AdminRepository adminRepository;
 
     public List<BoatOwner> getOwners(){
         return boatOwnerRepository.findAll();
@@ -48,5 +51,15 @@ public class BoatOwnerService {
         }
 
         boatOwnerRepository.delete(owner);
+    }
+
+    public void activateAccount(Integer adminId , Integer boatOwnerId){
+        Admin admin = adminRepository.findAdminById(adminId);
+        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(boatOwnerId);
+        if(admin == null || boatOwner == null){
+            throw new ApiException("admin or boat owner not found");
+        }
+        boatOwner.setStatus("ACTIVE");
+        boatOwnerRepository.save(boatOwner);
     }
 }

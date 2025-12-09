@@ -36,4 +36,10 @@ public class DriverController {
         return ResponseEntity.status(200).body(new ApiResponse("Driver removed"));
     }
 
+    @PutMapping("/activate-account/{adminId}/{driverId}")
+    public ResponseEntity<?> activateAccount(@PathVariable Integer adminId , @PathVariable Integer driverId){
+        driverService.activateAccount(adminId, driverId);
+        return ResponseEntity.status(200).body(new ApiResponse("Driver account activated successfully"));
+    }
+
 }
