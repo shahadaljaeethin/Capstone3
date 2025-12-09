@@ -3,6 +3,7 @@ package com.example.Capstone3.Controller;
 import com.example.Capstone3.Api.ApiResponse;
 import com.example.Capstone3.Model.Admin;
 import com.example.Capstone3.Service.AdminService;
+import com.example.Capstone3.Service.sendMail;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminController {
 
+    private final sendMail test;//********************DELETE THIS LINE AFTER THE TEST******************************
     private final AdminService adminService;
 
     @GetMapping("/get")
     public ResponseEntity<?> getAdmins(){
+           test.sendMessage();
         return ResponseEntity.status(200).body(adminService.getAdmins());
     }
 

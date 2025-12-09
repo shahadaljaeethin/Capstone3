@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,12 @@ public class Trip {
     @NotEmpty(message = "Title cannot be empty")
     @Column(columnDefinition = "varchar(80) not null")
     private String title;
+
+    @NotEmpty
+    @Size(max = 400, message = "*description too long (max 400 characters)")
+    @Column(columnDefinition = "varchar(400)")
+    private String description;
+
 
     @NotEmpty(message = "Full name cannot be empty")
     @Pattern(regexp = "^(Fishing trip | Recreational trip)$", message = "Trip type must be either Fishing trip or Recreational trip")

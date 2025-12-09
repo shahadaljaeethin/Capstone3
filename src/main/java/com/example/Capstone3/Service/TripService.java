@@ -55,10 +55,10 @@ public class TripService {
         if(driver == null || trip == null){
             throw new ApiException("Driver or Trip not found");
         }
-        trip.setDriver(driver);
-        Long durationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
-        trip.setTotalPrice(trip.getTotalPrice()+durationHours*driver.getHourlyWage());
-        tripRepository.save(trip);
+//        trip.setDriver(driver);
+//        Long durationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
+//        trip.setTotalPrice(trip.getTotalPrice()+durationHours*driver.getHourlyWage());
+//        tripRepository.save(trip);
     }
 
     public void updateTrip(Integer id, Trip trip){

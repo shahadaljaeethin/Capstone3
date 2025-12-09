@@ -1,5 +1,6 @@
 package com.example.Capstone3.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -78,4 +79,7 @@ public class Driver {
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "driver")
     private Set<Trip> trips;
 
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "driver")
+    @JsonIgnore
+    private Set<DriverRequest> requestInbox;
 }

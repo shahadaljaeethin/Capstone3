@@ -22,6 +22,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
+    //***category must be three types only, change pattern
     @NotEmpty(message = "*enter category name")
     @Size(min = 3, max = 25, message = "*name size 3-25 characters")
     @Pattern(regexp = "^[A-Za-z ]+$", message = "*name can contains letters and spaces only")

@@ -43,10 +43,7 @@ public class Boat {
     private Integer pricePerHour;
 
     @NotEmpty(message = "*enter status")
-    @Pattern(
-            regexp = "^(AVAILABLE|NOT_AVAILABLE|MAINTENANCE)$",
-            message = "*status must be AVAILABLE, NOT_AVAILABLE or MAINTENANCE"
-    )
+    @Pattern(regexp = "^(AVAILABLE|NOT_AVAILABLE|MAINTENANCE)$", message = "*status must be AVAILABLE, NOT_AVAILABLE or MAINTENANCE")
     @Column(columnDefinition = "varchar(20) not null default 'AVAILABLE'")
     private String status = "AVAILABLE";
 
@@ -57,6 +54,12 @@ public class Boat {
     @NotNull(message = "*select category")
     @ManyToOne
     private Category category;
+
+    @NotEmpty
+    @Size(max = 300, message = "*description too long (max 300 characters)")
+    @Column(columnDefinition = "varchar(300)")
+    private String description;
+
 
     @OneToMany(mappedBy = "boat", cascade = CascadeType.ALL)
     @JsonIgnore
