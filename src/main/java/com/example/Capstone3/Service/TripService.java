@@ -29,6 +29,7 @@ public class TripService {
         return tripRepository.findAll();
     }
 
+
     public void addTrip(Integer boatOwnerId, Integer boatId , Trip trip){
         Boat boat = boatRepository.findBoatById(boatId);
         BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(boatOwnerId);

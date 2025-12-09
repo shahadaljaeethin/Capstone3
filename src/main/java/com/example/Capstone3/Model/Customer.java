@@ -16,7 +16,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table
 public class Customer {
 
     @Id
@@ -65,7 +64,7 @@ public class Customer {
     private Set<Review> reviews;
 
 
-//-------------------------------------------------
+    //-------------------------------------------------
 
     @OneToMany(cascade = CascadeType.ALL ,mappedBy = "customer")
     @JsonIgnore

@@ -61,10 +61,10 @@ public class Trip {
     @Column(columnDefinition = "varchar(10) not null")
     private String status;
 
-    @Column(columnDefinition = "Double ") //int
-    private Double totalPrice;
+    @Column(columnDefinition = "bigint") //int
+    private long totalPrice;
 
-//---------------------Relations-----------------------------
+//---------------------Relations-------------------------------
 
     @OneToOne(cascade = CascadeType.ALL , mappedBy = "trip")
     @PrimaryKeyJoinColumn
@@ -86,5 +86,6 @@ public class Trip {
     @ManyToOne
     @JsonIgnore
     private BoatOwner boatOwner;
+
 
 }

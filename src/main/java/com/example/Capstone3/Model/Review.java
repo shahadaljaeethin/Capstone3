@@ -21,6 +21,7 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
     @NotNull(message = "*enter rating")
     @Min(value = 1, message = "*rating must be at least 1")
     @Max(value = 5, message = "*rating must be at most 5")
