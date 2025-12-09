@@ -61,11 +61,10 @@ public class Trip {
     @Column(columnDefinition = "varchar(10) not null")
     private String status;
 
-    @NotNull(message = "Total price cannot be null")
-    @Column(columnDefinition = "Double not null")
+    @Column(columnDefinition = "Double ")
     private Double totalPrice;
 
-//---------------------Relation-----------------------------
+//---------------------Relations-----------------------------
 
     @ManyToOne
     @JoinColumn

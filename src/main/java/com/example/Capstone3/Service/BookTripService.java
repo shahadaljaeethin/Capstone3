@@ -30,6 +30,9 @@ public class BookTripService {
         if(trip == null || customer == null){
             throw new ApiException("Trip or customer not found");
         }
+        if(trip.getStatus().equalsIgnoreCase("Ongoing") || trip.getStatus().equalsIgnoreCase("Completed")){
+            throw new ApiException("You cannot boob this trip");
+        }
         bookTripRepository.save(bookTrip);
     }
 
