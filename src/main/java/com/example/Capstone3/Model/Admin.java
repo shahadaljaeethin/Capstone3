@@ -45,7 +45,6 @@ public class Admin {
     @Column(columnDefinition = "varchar(30) not null")
     private String password;
 
-
     @CreationTimestamp
     @Column(columnDefinition = "dateTime ")
     private LocalDate createdAt;

@@ -64,7 +64,7 @@ public class Trip {
     @Column(columnDefinition = "Double ") //int
     private Double totalPrice;
 
-//---------------------Relations-----------------------------
+//---------------------Relations-------------------------------
 
     @OneToOne(cascade = CascadeType.ALL , mappedBy = "trip")
     @PrimaryKeyJoinColumn

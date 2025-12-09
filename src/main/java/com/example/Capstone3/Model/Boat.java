@@ -59,7 +59,7 @@ public class Boat {
     @JsonIgnore
     private Category category;
 
-    //--------------------------------------------------
+    //---------------------------------------------------
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "boat")
     private Set<Trip> tripSet;
 

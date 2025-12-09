@@ -77,7 +77,7 @@ public class Driver {
     private String city;
 
 
-    //---------------------------------------------------------
+    //-----------------------------------------------------------
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "driver")
     private Set<Trip> trips;
 

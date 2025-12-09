@@ -68,7 +68,7 @@ public class BoatOwner {
     @JsonIgnore
     private Set<Boat> boats ;
 
-    //--------------------------------------------------
+    //---------------------------------------------------
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "boatOwner")
     private Set<Trip> tripSet;
 }
