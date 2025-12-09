@@ -19,7 +19,10 @@ public class DriverRequestService {
 
 
 
-    public void acceptRequest(){}
+    public void acceptRequest(Integer driverId,Integer requestId){
+
+    
+    }
 
     public void appologizeRequest(){}
 }
