@@ -54,7 +54,7 @@ public class Driver {
 
     @NotEmpty(message = "*enter license number")
     @Size(min = 5,max = 10 , message = "*license number must be 5-10 digits")
-    @Pattern(regexp = "^[0-9]$",message = "*license number contains digits only")
+    @Pattern(regexp = "^[0-9]+$",message = "*license number contains digits only")
     @Column(columnDefinition = "varchar(10) not null unique")
     private String licenseNumber;
 

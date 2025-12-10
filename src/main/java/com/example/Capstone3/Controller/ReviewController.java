@@ -1,7 +1,9 @@
 package com.example.Capstone3.Controller;
 
+import com.example.Capstone3.Api.ApiResponse;
 import com.example.Capstone3.Model.Review;
 import com.example.Capstone3.Service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,21 +20,29 @@ public class ReviewController {
         return ResponseEntity.status(200).body(reviewService.getAllReviews());
     }
 
-    @PostMapping("/add/{boatId}/{customerId}")
-    public ResponseEntity<?> addReview(@PathVariable Integer boatId, @PathVariable Integer customerId, @RequestBody Review review) {
-        reviewService.addReview(boatId, customerId, review);
-        return ResponseEntity.status(200).body("Review added successfully");
+    @PostMapping("/add/{ownerId}/{customerId}")
+    public ResponseEntity<?> addReview(@PathVariable Integer ownerId,
+                                       @PathVariable Integer customerId,
+                                       @RequestBody @Valid Review review) {
+        reviewService.addReview(ownerId, customerId, review);
+        return ResponseEntity.status(200).body(new ApiResponse("Review added successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateReview(@PathVariable Integer id, @RequestBody Review review) {
+    public ResponseEntity<?> updateReview(@PathVariable Integer id,
+                                          @RequestBody @Valid Review review) {
         reviewService.updateReview(id, review);
-        return ResponseEntity.status(200).body("Review updated successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Review updated successfully"));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteReview(@PathVariable Integer id) {
         reviewService.deleteReview(id);
-        return ResponseEntity.status(200).body("Review deleted successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Review deleted successfully"));
+    }
+
+    @GetMapping("/get-top-rated-boat-owner")
+    public ResponseEntity<?> getTopRatedBoatOwner() {
+        return ResponseEntity.status(200).body(reviewService.getTopRatedBoatOwner());
     }
 }

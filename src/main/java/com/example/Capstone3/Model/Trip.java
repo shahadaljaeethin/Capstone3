@@ -40,7 +40,7 @@ public class Trip {
     private String tripType;
 
     @NotNull(message = "Fishing gear cannot be empty")
-//    @Column(columnDefinition = "TINYINT not null")
+    @Column(columnDefinition = "TINYINT not null")
     private boolean fishingGear;
 
     @NotNull(message = "Start date cannot be empty" )
@@ -73,8 +73,6 @@ public class Trip {
 
 
     private  Boolean isRequested;
-
-    //private Boolean
 
 //---------------------Relations-------------------------------
 

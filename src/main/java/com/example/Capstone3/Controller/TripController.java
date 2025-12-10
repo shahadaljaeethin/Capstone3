@@ -46,7 +46,40 @@ public class TripController {
 
     @PostMapping("/request-customized-trip/{customerId}")
     public  ResponseEntity<?> customizedTrip(@PathVariable Integer customerId , @RequestBody @Valid Trip trip){
-        tripService.customizedTrip(customerId, trip);
+        tripService.requestCustomizedTrip(customerId, trip);
         return ResponseEntity.status(200).body(new ApiResponse("Request customized trip send to boat owner successfully"));
     }
+
+    @PutMapping("/approve-customized-trip/{boatOwnerId}/{tripId}")
+    public ResponseEntity<?> approveCustomizedTripRequest(@PathVariable Integer boatOwnerId , @PathVariable Integer tripId){
+        tripService.approveCustomizedTrip(boatOwnerId, tripId);
+        return ResponseEntity.status(200).body(new ApiResponse("Customized trip approved successfully"));
+    }
+
+    @PutMapping("/reject-customized-trip/{boatOwnerId}/{tripId}")
+    public ResponseEntity<?> rejectCustomizedTripRequest(@PathVariable Integer boatOwnerId , @PathVariable Integer tripId){
+        tripService.rejectCustomizedTrip(boatOwnerId, tripId);
+        return ResponseEntity.status(200).body(new ApiResponse("Customized trip rejected successfully"));
+    }
+
+    @GetMapping("/get-trips-by-status/{status}")
+    public ResponseEntity<?> getTripsByStatus(@PathVariable String status){
+        return ResponseEntity.status(200).body(tripService.getTripsByStatus(status));
+    }
+
+    @GetMapping("/get-trips-by-destination-location/{destination}")
+    public ResponseEntity<?> getTripsByDestinationLocation(@PathVariable String destination){
+        return ResponseEntity.status(200).body(tripService.getTripsByDestinationLocation(destination));
+    }
+
+
+    //Is post mapping ? or get , for real
+    @PostMapping("/send emergency/{tripId}")
+    public ResponseEntity<?> sendEmergency(@PathVariable Integer tripId){
+    tripService.sendEmergency(tripId,true);
+        return ResponseEntity.status(200).body(new ApiResponse("Emergency request send to Owner and Emergency contact successfully"));
+    }
+
+
+
 }

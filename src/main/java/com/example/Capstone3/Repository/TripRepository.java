@@ -8,5 +8,8 @@ import java.util.List;
 public interface TripRepository extends JpaRepository<Trip, Integer> {
 
     Trip findTripById(Integer id);
+
     List<Trip> findTripByStatus(String status);
+    List<Trip> findTripByDestinationLocation(String destinationLocation);
+
 }

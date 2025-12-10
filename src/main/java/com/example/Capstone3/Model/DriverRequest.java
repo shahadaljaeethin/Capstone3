@@ -26,7 +26,9 @@ public class DriverRequest {
     private String message;
 
     @Pattern(regexp = "^(pending|accept|apologize)$")
-    private String status;
+    @Column(columnDefinition = "varchar(15) not null default 'pending'")
+    private String status = "pending";
+
 
     @ManyToOne
     private BoatOwner owner;

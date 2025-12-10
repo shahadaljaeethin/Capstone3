@@ -1,12 +1,10 @@
 package com.example.Capstone3.Service;
 
 import com.example.Capstone3.Api.ApiException;
-import com.example.Capstone3.Model.Boat;
 import com.example.Capstone3.Model.BoatOwner;
 import com.example.Capstone3.Model.Customer;
 import com.example.Capstone3.Model.Review;
 import com.example.Capstone3.Repository.BoatOwnerRepository;
-import com.example.Capstone3.Repository.BoatRepository;
 import com.example.Capstone3.Repository.CustomerRepository;
 import com.example.Capstone3.Repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +25,17 @@ public class ReviewService {
     }
 
     public void addReview(Integer ownerId, Integer customerId, Review review) {
+
         BoatOwner owner = boatOwnerRepository.findBoatOwnerById(ownerId);
         if (owner == null) {
-            throw new ApiException("owner not found");
+            throw new ApiException("Owner not found");
         }
 
         Customer customer = customerRepository.findCustomerById(customerId);
         if (customer == null) {
             throw new ApiException("Customer not found");
         }
+
         review.setBoatOwner(owner);
         review.setCustomer(customer);
 
@@ -57,6 +57,7 @@ public class ReviewService {
     }
 
     public void deleteReview(Integer reviewId) {
+
         Review review = reviewRepository.findById(reviewId).orElse(null);
 
         if (review == null) {
@@ -64,5 +65,9 @@ public class ReviewService {
         }
 
         reviewRepository.delete(review);
+    }
+
+    public BoatOwner getTopRatedBoatOwner() {
+        return reviewRepository.findTopRatedBoatOwner();
     }
 }

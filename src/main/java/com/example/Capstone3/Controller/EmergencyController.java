@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/emergency")
 @RequiredArgsConstructor
 public class EmergencyController {
+
     private final EmergencyService emergencyService;
 
     @GetMapping("/get")
@@ -19,9 +20,9 @@ public class EmergencyController {
         return ResponseEntity.status(200).body(emergencyService.getAll());
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addEmergency(@RequestBody @Valid Emergency emergency) {
-        emergencyService.addEmergency(emergency);
+    @PostMapping("/add/{customerId}")
+    public ResponseEntity<?> addEmergency(@PathVariable Integer customerId, @RequestBody @Valid Emergency emergency) {
+        emergencyService.addEmergency(customerId, emergency);
         return ResponseEntity.status(200).body(new ApiResponse("Emergency contact added"));
     }
 
@@ -36,5 +37,4 @@ public class EmergencyController {
         emergencyService.deleteEmergency(id);
         return ResponseEntity.status(200).body(new ApiResponse("Emergency contact deleted"));
     }
-
 }

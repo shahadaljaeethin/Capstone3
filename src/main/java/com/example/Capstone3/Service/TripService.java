@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -21,7 +22,7 @@ public class TripService {
     private final CustomerRepository customerRepository;
     private final SendMailService sendMailService;
     private final EmergencyRepository emergencyRepository;
-
+    private final GeocodingService geocodingService;
 
     public List<Trip> getTrips() {
         return tripRepository.findAll();
@@ -40,9 +41,14 @@ public class TripService {
         if (!boatOwner.getBoats().contains(trip.getBoat())) {
             throw new ApiException("The boat owner cannot add this trip because he does not have the appropriate boat");
         }
+
+        if(trip.getEndDate().isBefore(trip.getStartDate())) throw new ApiException("*end date must be after start date");
+        Long DurationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
+        if(DurationHours < 2) throw new ApiException("minimum duration for a trip is two hours");
+
         trip.setBoat(boat);
         trip.setBoatOwner(boatOwner);
-        Long DurationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
+
         trip.setTotalPrice(DurationHours * trip.getBoat().getPricePerHour());
         tripRepository.save(trip);
     }
@@ -101,7 +107,7 @@ public class TripService {
 
     //===============================================================================================
 
-    public void customizedTrip(Integer customerId , Trip trip){
+    public void requestCustomizedTrip(Integer customerId , Trip trip){
         Customer customer = customerRepository.findCustomerById(customerId);
         if(customer == null){
             throw  new ApiException("Customer not found");
@@ -110,8 +116,8 @@ public class TripService {
         trip.setIsRequested(true);
         trip.setCustomer(customer);
         tripRepository.save(trip);
-        //Email
 
+        //Email
         BoatOwner boatOwner = trip.getBoatOwner();
 
         if (boatOwner == null) {
@@ -134,6 +140,88 @@ public class TripService {
 
             sendMailService.sendMessage(boatOwner.getEmail(), subject, body);
     }
+
+    public void approveCustomizedTrip(Integer boatOwnerId , Integer tripId){
+
+        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(boatOwnerId);
+        Trip trip = tripRepository.findTripById(tripId);
+        Customer customer = trip.getCustomer();
+        if(boatOwner == null ){
+            throw new ApiException("Boat owner not found");
+        }
+        if(!trip.getBoatOwner().equals(boatOwner)){
+            throw new ApiException("Boat owner unauthorized to approve this trip");
+        }
+        trip.setStatus("Upcoming");
+        customer.getMyTrips().add(trip);
+        tripRepository.save(trip);
+        customerRepository.save(customer);
+
+        String subject = "Customized Trip Accepted ✅";
+
+        String body =
+                "Hello " + customer.getName() + ",\n\n" +
+                        "Your request for the customized trip:\n" +
+                        trip.getTitle() + "\n\n" +
+                        "Has been ACCEPTED successfully ✅\n\n" +
+                        "Trip Details:\n" +
+                        "- Start: " + trip.getStartDate() + "\n" +
+                        "- From: " + trip.getStartLocation() + "\n" +
+                        "- To: " + trip.getDestinationLocation() + "\n\n" +
+                        "Enjoy your trip 🌊🚤";
+
+        sendMailService.sendMessage(customer.getEmail(), subject, body);
+    }
+
+    public void rejectCustomizedTrip(Integer boatOwnerId , Integer tripId){
+        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(boatOwnerId);
+        Trip trip = tripRepository.findTripById(tripId);
+        Customer customer = trip.getCustomer();
+        if(boatOwner == null ){
+            throw new ApiException("Boat owner not found");
+        }
+        if(!trip.getBoatOwner().equals(boatOwner)){
+            throw new ApiException("Boat owner unauthorized to reject this trip");
+        }
+
+        tripRepository.delete(trip);
+
+        String subject = "Apology Regarding Your Customized Trip Request ❗";
+
+        String body =
+                "Hello " + customer.getName() + ",\n\n" +
+                        "We hope you are doing well.\n\n" +
+                        "We regret to inform you that your request for the customized trip:\n" +
+                        trip.getTitle() + "\n\n" +
+                        "Could not be accepted at the moment ❗\n\n" +
+                        "Trip Details:\n" +
+                        "- Start: " + trip.getStartDate() + "\n" +
+                        "- From: " + trip.getStartLocation() + "\n" +
+                        "- To: " + trip.getDestinationLocation() + "\n\n" +
+                        "We sincerely apologize for any inconvenience this may have caused.\n" +
+                        "Please feel free to submit another request or contact us if you need further assistance.\n\n" +
+                        "Thank you for your understanding 🙏";
+
+        sendMailService.sendMessage(customer.getEmail(), subject, body);
+
+    }
+
+    public List<Trip> getTripsByStatus(String status){
+        List<Trip> trips = tripRepository.findTripByStatus(status);
+        if(trips.isEmpty()){
+            throw new ApiException("There is no trips with the given status");
+        }
+        return trips;
+    }
+
+    public List<Trip> getTripsByDestinationLocation(String destinationLocation){
+        List<Trip> trips = tripRepository.findTripByDestinationLocation(destinationLocation);
+        if(trips.isEmpty()){
+            throw new ApiException("There is no trips with the given destination location");
+        }
+        return trips;
+    }
+
 
         //------------------------------------------------
 
@@ -162,9 +250,9 @@ public class TripService {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("Times out");
+                System.out.println("Times out"); //**   delete after testing
                 //call emergency
-
+                sendEmergency(tripId,false);
             }
         }, delayMillis * 1000);
     }
@@ -216,12 +304,66 @@ public class TripService {
         return aiRecommendations;
     }
 
-    public void sendEmergency(Integer tripId) {
+    public void sendEmergency(Integer tripId,boolean byUser) {
         Trip trip = tripRepository.findTripById(tripId);
         if (trip == null) throw new ApiException("trip not found");
 
         Customer customer = trip.getCustomer();
-       // Emergency emergency =
+        Emergency emergency = emergencyRepository.findEmergencyByCustomer_Id(customer.getId());
+        BoatOwner boatOwner = trip.getBoatOwner();
+
+        String tripInfo = "Trip Title: "+trip.getTitle() +"\n"+
+         "Start Location: "+trip.getStartLocation()+" : "+geocodingService.getLocationCoordinates(trip.getStartLocation())+"\n" +
+         "End Location: "+trip.getEndLocation()+"\n : "+geocodingService.getLocationCoordinates(trip.getEndLocation())+
+          "Destination: "+trip.getDestinationLocation()+" : "+geocodingService.getLocationCoordinates(trip.getDestinationLocation())+"\n" +
+           "expected Start and End time : "+trip.getStartDate()+"-"+trip.getEndDate()+"\n" +
+            "Trip Type: "+trip.getTripType();
+
+
+
+        String emergType = (byUser) ? "they asked for help" : "they didn't arrive/finish trip on time";
+        String ownerMessageTitle = "*EMERGENCY CASE*";
+        String ownerMessageBody = "An EMERGENCY case for one of your customers of trip ID "+tripId+"" +
+         "\nwhere **"+emergType+"**\nTrip info :\n"+tripInfo;
+
+        String contactMessageTitle = "*EMERGENCY CASE* for your relative "+customer.getName();
+        String contactMessageBody = "Dear "+emergency.getName()+", you recived this message as an emergency contact for "+customer.getName()+"." +
+         "\n They went on sea trip and "+emergType+"\nTrip info :\n"+tripInfo;
+
+
+        sendMailService.sendMessage(boatOwner.getEmail(),ownerMessageTitle,ownerMessageBody);
+        sendMailService.sendMessage(emergency.getEmail(),contactMessageTitle,contactMessageBody);
+    }
+
+
+
+    public void discountTripTillDate(Integer tripId, Integer ownerId, Double discountPrecentage, LocalDate date){
+        Trip trip = tripRepository.findTripById(tripId);
+        BoatOwner owner = boatOwnerRepository.findBoatOwnerById(ownerId);
+        if (trip == null || owner==null) throw new ApiException("trip or owner not found");
+
+        if(owner!=trip.getBoatOwner())throw new ApiException("not Authorized");
+        long discount = (long) (trip.getTotalPrice()-(trip.getTotalPrice()*discountPrecentage));
+        long oldPrice = trip.getTotalPrice();
+        trip.setTotalPrice(discount);
+        tripRepository.save(trip);
+
+        //timer
+        Timer timer = new Timer();      //Do we cancel the timer when customer book the trip ?
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime end = date.atStartOfDay();
+        long delayMillis = Duration.between(now, end).toMillis();
+        if (delayMillis <= 0) throw new ApiException("");
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("Times out"); //delete after testing
+               //price back
+               trip.setTotalPrice(oldPrice);
+               tripRepository.save(trip);
+            }
+        }, delayMillis * 1000);
 
     }
 

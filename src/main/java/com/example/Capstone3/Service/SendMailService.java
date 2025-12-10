@@ -18,20 +18,7 @@ public class SendMailService {
     private JavaMailSender javaEmailSender;
 
 
-    public void sendMessage(){
 
-        String body = "any body";
-
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-
-        simpleMailMessage.setTo("shahadkn67@gmail.com"); //change later, I want to test it
-        simpleMailMessage.setFrom("rewaya.website26@gmail.com");
-        simpleMailMessage.setSubject("any Title");
-        simpleMailMessage.setText(body);
-        javaEmailSender.send(simpleMailMessage);
-
-
-    }
 
     public void sendMessage(String email, String subject, String body) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();

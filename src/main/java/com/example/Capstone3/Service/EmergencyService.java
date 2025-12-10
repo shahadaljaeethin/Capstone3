@@ -13,35 +13,38 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class EmergencyService {
+
     private final EmergencyRepository emergencyRepository;
     private final CustomerRepository customerRepository;
 
+    public List<Emergency> getAll() {
+        return emergencyRepository.findAll();
+    }
 
-    public List<Emergency> getAll(){return emergencyRepository.findAll();}
-
-    public void addEmergency(Integer customerId,Emergency emergency){
+    public void addEmergency(Integer customerId, Emergency emergency) {
         Customer customer = customerRepository.findCustomerById(customerId);
-        if(customer==null) {
+        if (customer == null) {
             throw new ApiException("customer not found");
         }
         emergency.setCustomer(customer);
         emergencyRepository.save(emergency);
     }
 
-    public void updateEmergency(Integer id,Emergency edit){
-
+    public void updateEmergency(Integer id, Emergency edit) {
         Emergency emergency = emergencyRepository.findEmergencyById(id);
-        if(emergency==null) throw new ApiException("emergency contact not found");
+        if (emergency == null) {
+            throw new ApiException("emergency contact not found");
+        }
         emergency.setName(edit.getName());
-       // emergency.setRel(edit.getDescription());
-        //emergency.setLastKnownLocation(edit.getLastKnownLocation());
+        emergency.setRel(edit.getRel());
         emergencyRepository.save(emergency);
-
     }
 
-    public void deleteEmergency(Integer id){
+    public void deleteEmergency(Integer id) {
         Emergency emergency = emergencyRepository.findEmergencyById(id);
-        if(emergency==null) throw new ApiException("emergeny contact not found");
+        if (emergency == null) {
+            throw new ApiException("emergency contact not found");
+        }
         emergencyRepository.delete(emergency);
     }
 }
