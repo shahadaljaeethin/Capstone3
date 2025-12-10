@@ -37,7 +37,7 @@ public class Review {
     private LocalDateTime creatAt = LocalDateTime.now();
 
     @ManyToOne
-    private Boat boat;
+    private BoatOwner boatOwner;
 
     @ManyToOne
     private Customer customer;

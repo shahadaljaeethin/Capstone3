@@ -40,10 +40,7 @@ public class BoatOwner {
 
     @NotEmpty(message = "*enter password")
     @Size(min = 8, max = 30, message = "*password length 8-30 characters")
-    @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&./_-])[A-Za-z\\d@$!%*?&./_-]{8,30}$",
-            message = "*password must contain small & capital letter, digit and special character"
-    )
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&./_-])[A-Za-z\\d@$!%*?&./_-]{8,30}$", message = "*password must contain small & capital letter, digit and special character")
     @Column(columnDefinition = "varchar(30) not null")
     private String password;
 

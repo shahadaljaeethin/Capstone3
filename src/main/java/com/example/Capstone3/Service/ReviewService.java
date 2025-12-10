@@ -2,8 +2,10 @@ package com.example.Capstone3.Service;
 
 import com.example.Capstone3.Api.ApiException;
 import com.example.Capstone3.Model.Boat;
+import com.example.Capstone3.Model.BoatOwner;
 import com.example.Capstone3.Model.Customer;
 import com.example.Capstone3.Model.Review;
+import com.example.Capstone3.Repository.BoatOwnerRepository;
 import com.example.Capstone3.Repository.BoatRepository;
 import com.example.Capstone3.Repository.CustomerRepository;
 import com.example.Capstone3.Repository.ReviewRepository;
@@ -17,17 +19,17 @@ import java.util.List;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final BoatRepository boatRepository;
+    private final BoatOwnerRepository boatOwnerRepository;
     private final CustomerRepository customerRepository;
 
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
     }
 
-    public void addReview(Integer boatId, Integer customerId, Review review) {
-        Boat boat = boatRepository.findBoatById(boatId);
-        if (boat == null) {
-            throw new ApiException("Boat not found");
+    public void addReview(Integer ownerId, Integer customerId, Review review) {
+        BoatOwner owner = boatOwnerRepository.findBoatOwnerById(ownerId);
+        if (owner == null) {
+            throw new ApiException("owner not found");
         }
 
         Customer customer = customerRepository.findCustomerById(customerId);
@@ -35,13 +37,13 @@ public class ReviewService {
             throw new ApiException("Customer not found");
         }
 
-        Review oldReview = reviewRepository.findReviewByBoatIdAndCustomerId(boatId, customerId);
+        Review oldReview = reviewRepository.findReviewByBoatIdAndCustomerId(ownerId, customerId);
 
         if (oldReview != null) {
             throw new ApiException("Customer already reviewed this boat");
         }
 
-        review.setBoat(boat);
+            review.setBoatOwner(owner);
         review.setCustomer(customer);
 
         reviewRepository.save(review);

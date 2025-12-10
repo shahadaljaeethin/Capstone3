@@ -17,6 +17,7 @@ import java.util.Set;
 public class Boat {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotEmpty(message = "*enter boat name")
