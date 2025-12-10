@@ -75,10 +75,6 @@ public class Trip {
 
 //---------------------Relations-------------------------------
 
-    @OneToOne(cascade = CascadeType.ALL , mappedBy = "trip")
-    @PrimaryKeyJoinColumn
-    private Emergency emergency;
-
     @ManyToOne
     @JoinColumn
     private Driver driver;
