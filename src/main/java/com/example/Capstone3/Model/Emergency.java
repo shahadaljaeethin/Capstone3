@@ -32,8 +32,9 @@ public class Emergency {
     @Size(min = 3,max = 15 , message = "*description size 4-15character")
     @Pattern(regexp = "^[A-Za-z]+$",message = "*description can contains letters only")
     @Column(columnDefinition = "varchar(15) not null")
-    private String description;
+    private String rel;
 
+   // private String
 
     @Column(columnDefinition = "varchar(255)")
     private String lastKnownLocation;

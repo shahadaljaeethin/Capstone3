@@ -64,12 +64,14 @@ public class Trip {
     private String endLocation;
 
     @NotEmpty(message = "Status cannot be empty")
-    @Pattern(regexp = "^(Upcoming | Ongoing | Completed )$", message = "Status must be either Upcoming, Ongoing or Completed")
+    @Pattern(regexp = "^(Upcoming | Ongoing | Completed | Request)$", message = "Status must be either Upcoming, Ongoing or Completed")
     @Column(columnDefinition = "varchar(10) not null")
     private String status;
 
     @Column(columnDefinition = "bigint") //int
     private Long totalPrice;
+
+    //private Boolean
 
 //---------------------Relations-------------------------------
 

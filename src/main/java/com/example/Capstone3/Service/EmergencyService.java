@@ -18,6 +18,7 @@ public class EmergencyService {
 
 
     public List<Emergency> getAll(){return emergencyRepository.findAll();}
+
     public void addEmergency(Emergency emergency){
         Customer customer = customerRepository.findCustomerById(emergency.getCustomer().getId());
         if(customer==null) throw new ApiException("customer not found");
@@ -30,7 +31,7 @@ public class EmergencyService {
         Emergency emergency = emergencyRepository.findEmergencyById(id);
         if(emergency==null) throw new ApiException("emergeny contact not found");
         emergency.setName(edit.getName());
-        emergency.setDescription(edit.getDescription());
+       // emergency.setRel(edit.getDescription());
         emergency.setLastKnownLocation(edit.getLastKnownLocation());
         emergencyRepository.save(emergency);
 
