@@ -43,4 +43,10 @@ public class TripController {
         tripService.deleteTrip(id);
         return ResponseEntity.status(200).body(new ApiResponse("Trip deleted successfully"));
     }
+
+    @PostMapping("/request-customized-trip/{customerId}")
+    public  ResponseEntity<?> customizedTrip(@PathVariable Integer customerId , @RequestBody @Valid Trip trip){
+        tripService.customizedTrip(customerId, trip);
+        return ResponseEntity.status(200).body(new ApiResponse("Request customized trip send to boat owner successfully"));
+    }
 }

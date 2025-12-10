@@ -13,7 +13,6 @@ import java.util.Set;
 @Setter
 @Entity
 @Table
-@Data
 public class Boat {
 
     @Id
@@ -41,31 +40,29 @@ public class Boat {
     @Column(columnDefinition = "int not null")
     private Integer pricePerHour;
 
-    @NotEmpty(message = "*enter status")
-    @Pattern(regexp = "^(AVAILABLE|NOT_AVAILABLE|MAINTENANCE)$", message = "*status must be AVAILABLE, NOT_AVAILABLE or MAINTENANCE")
+    @Pattern(regexp = "^(AVAILABLE|NOT_AVAILABLE|MAINTENANCE)$",
+            message = "*status must be AVAILABLE, NOT_AVAILABLE or MAINTENANCE")
     @Column(columnDefinition = "varchar(20) not null default 'AVAILABLE'")
     private String status = "AVAILABLE";
 
     @NotNull(message = "*select owner")
     @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
     private BoatOwner owner;
 
     @NotNull(message = "*select category")
     @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @NotEmpty
+    @NotEmpty(message = "*enter description")
     @Size(max = 300, message = "*description too long (max 300 characters)")
-    @Column(columnDefinition = "varchar(300)")
+    @Column(columnDefinition = "varchar(300) not null")
     private String description;
-//
-//    @OneToMany(mappedBy = "boat", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private Set<Review> reviews;
 
+    //--------------------------------------------------
 
-//--------------------------------------------------
-    @OneToMany(cascade = CascadeType.ALL , mappedBy = "boat")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "boat")
+    @JsonIgnore
     private Set<Trip> tripSet;
-
 }

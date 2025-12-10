@@ -69,7 +69,7 @@ public class Driver {
     @Min(value = 10,message = "*enter valid number")
     @Max(value = 1000, message = "*enter valid number")
     @PositiveOrZero
-    private Double hourlyWage;
+    private Long hourlyWage;
 
     @Pattern(regexp = "^(pending|available|busy)$")  // new attribute
     private String status;

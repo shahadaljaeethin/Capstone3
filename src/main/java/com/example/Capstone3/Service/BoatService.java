@@ -20,53 +20,82 @@ public class BoatService {
     private final BoatOwnerRepository boatOwnerRepository;
     private final CategoryRepository categoryRepository;
 
-    public List<Boat> getBoats(){
+    // ✅ Get All
+    public List<Boat> getAllBoats() {
         return boatRepository.findAll();
     }
 
-    public void addBoat(Boat boat){
-        BoatOwner owner = boatOwnerRepository.findBoatOwnerById(boat.getOwner().getId());
-        Category category = categoryRepository.findCategoryById(boat.getCategory().getId());
+    // ✅ Get By Id
+    public Boat getBoatById(Integer id) {
+        Boat boat = boatRepository.findBoatById(id);
+        if (boat == null) {
+            throw new ApiException("Boat not found");
+        }
+        return boat;
+    }
 
-        if(owner == null || category == null){
+    public void addBoat(Integer ownerId, Integer categoryId, Boat boat) {
+
+        BoatOwner owner = boatOwnerRepository.findBoatOwnerById(ownerId);
+        Category category = categoryRepository.findCategoryById(categoryId);
+
+        if (owner == null || category == null) {
             throw new ApiException("Owner or Category not found");
         }
+
+        boat.setOwner(owner);
+        boat.setCategory(category);
+
 
         boatRepository.save(boat);
     }
 
-    public void updateBoat(Integer id, Boat boat){
-        Boat oldBoat = boatRepository.findBoatById(id);
+    public void updateBoat(Integer boatId, Integer ownerId, Integer categoryId, Boat boat) {
 
-        if(oldBoat == null){
-            throw new ApiException("Boat not found");
-        }
+        Boat oldBoat = boatRepository.findBoatById(boatId);
+        BoatOwner owner = boatOwnerRepository.findBoatOwnerById(ownerId);
+        Category category = categoryRepository.findCategoryById(categoryId);
 
-        BoatOwner owner = boatOwnerRepository.findBoatOwnerById(boat.getOwner().getId());
-        Category category = categoryRepository.findCategoryById(boat.getCategory().getId());
-
-        if(owner == null || category == null){
-            throw new ApiException("Owner or Category not found");
+        if (oldBoat == null || owner == null || category == null) {
+            throw new ApiException("Boat or Owner or Category not found");
         }
 
         oldBoat.setName(boat.getName());
         oldBoat.setCapacity(boat.getCapacity());
         oldBoat.setMaxFuel(boat.getMaxFuel());
         oldBoat.setPricePerHour(boat.getPricePerHour());
-        oldBoat.setStatus(boat.getStatus());
-        oldBoat.setOwner(boat.getOwner());
-        oldBoat.setCategory(boat.getCategory());
+        oldBoat.setDescription(boat.getDescription());
+
+        if (boat.getStatus() != null) {
+            oldBoat.setStatus(boat.getStatus());
+        }
+
+        oldBoat.setOwner(owner);
+        oldBoat.setCategory(category);
 
         boatRepository.save(oldBoat);
     }
 
-    public void deleteBoat(Integer id){
+    public void deleteBoat(Integer id) {
         Boat boat = boatRepository.findBoatById(id);
+        if (boat == null) {
+            throw new ApiException("Boat not found");
+        }
+        boatRepository.delete(boat);
+    }
 
-        if(boat == null){
+    public void updateBoatStatus(Integer boatId, String status) {
+        Boat boat = boatRepository.findBoatById(boatId);
+
+        if (boat == null) {
             throw new ApiException("Boat not found");
         }
 
-        boatRepository.delete(boat);
+        if (!status.matches("AVAILABLE|NOT_AVAILABLE|MAINTENANCE")) {
+            throw new ApiException("Invalid status value");
+        }
+
+        boat.setStatus(status);
+        boatRepository.save(boat);
     }
 }

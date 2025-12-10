@@ -20,7 +20,6 @@ public class BookTrip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty(message = "*enter status")
     @Pattern(regexp = "^(PENDING|ACCEPTED|REJECTED)$", message = "status must be PENDING, ACCEPTED or REJECTED")
     @Column(columnDefinition = "varchar(10) not null default 'PENDING'")
     private String status = "PENDING";

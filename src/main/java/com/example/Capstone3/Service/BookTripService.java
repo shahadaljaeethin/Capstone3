@@ -21,55 +21,53 @@ public class BookTripService {
     private final CustomerRepository customerRepository;
     private final SendMailService sendMailService;
 
-
-    public List<BookTrip> getBookTrip(){
+    public List<BookTrip> getBookTrip() {
         return bookTripRepository.findAll();
     }
 
-    public void addBookTrip(BookTrip bookTrip){
-        Trip trip = tripRepository.findTripById(bookTrip.getTrip().getId());
-        Customer customer = customerRepository.findCustomerById(bookTrip.getCustomer().getId());
-        if(trip == null || customer == null){
+    public void addBookTrip(Integer tripId, Integer customerId) {
+
+        Trip trip = tripRepository.findTripById(tripId);
+        Customer customer = customerRepository.findCustomerById(customerId);
+
+        if (trip == null || customer == null) {
             throw new ApiException("Trip or customer not found");
         }
-        if(trip.getStatus().equalsIgnoreCase("Ongoing") || trip.getStatus().equalsIgnoreCase("Completed")){
-            throw new ApiException("You cannot boob this trip");
+
+        if (trip.getStatus().equalsIgnoreCase("Ongoing") ||
+                trip.getStatus().equalsIgnoreCase("Completed")) {
+            throw new ApiException("You cannot book this trip");
         }
+
+        BookTrip bookTrip = new BookTrip();
+        bookTrip.setTrip(trip);
+        bookTrip.setCustomer(customer);
+
         bookTripRepository.save(bookTrip);
     }
 
-    public void updateBookTrip(Integer id, BookTrip bookTrip){
-        BookTrip oldBookTrip = bookTripRepository.findBookTripById(id);
-        if(oldBookTrip == null){
-            throw new ApiException("Book Trip not found");
-        }
-        Trip trip = tripRepository.findTripById(bookTrip.getTrip().getId());
-        Customer customer = customerRepository.findCustomerById(bookTrip.getCustomer().getId());
-        if(trip == null || customer == null){
-            throw new ApiException("Trip or customer not found");
-        }
-        oldBookTrip.setTrip(bookTrip.getTrip());
-        oldBookTrip.setCustomer(bookTrip.getCustomer());
-        bookTripRepository.save(oldBookTrip);
-    }
 
-    public void deleteBookTrip(Integer id){
+    public void deleteBookTrip(Integer id) {
+
         BookTrip bookTrip = bookTripRepository.findBookTripById(id);
-        if(bookTrip == null){
+
+        if (bookTrip == null) {
             throw new ApiException("Book Trip not found");
         }
+
         bookTripRepository.delete(bookTrip);
     }
-
 
     public void acceptBooking(Integer ownerId, Integer bookTripId) {
 
         BookTrip bookTrip = bookTripRepository.findBookTripById(bookTripId);
+
         if (bookTrip == null) {
             throw new ApiException("Booking not found");
         }
 
         Trip trip = bookTrip.getTrip();
+
         if (trip == null || trip.getBoatOwner() == null) {
             throw new ApiException("Trip or owner not found");
         }
@@ -101,20 +99,21 @@ public class BookTripService {
                             "- From: " + trip.getStartLocation() + "\n" +
                             "- To: " + trip.getDestinationLocation() + "\n\n" +
                             "Enjoy your trip 🌊🚤";
-                            //come back before endDate
+
             sendMailService.sendMessage(customer.getEmail(), subject, body);
         }
     }
 
-
     public void rejectBooking(Integer ownerId, Integer bookTripId) {
 
         BookTrip bookTrip = bookTripRepository.findBookTripById(bookTripId);
+
         if (bookTrip == null) {
             throw new ApiException("Booking not found");
         }
 
         Trip trip = bookTrip.getTrip();
+
         if (trip == null || trip.getBoatOwner() == null) {
             throw new ApiException("Trip or owner not found");
         }
@@ -147,8 +146,4 @@ public class BookTripService {
             sendMailService.sendMessage(customer.getEmail(), subject, body);
         }
     }
-
-
-
-
 }

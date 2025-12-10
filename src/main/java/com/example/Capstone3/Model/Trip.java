@@ -71,6 +71,9 @@ public class Trip {
     @Column(columnDefinition = "bigint") //int
     private Long totalPrice;
 
+
+    private  Boolean isRequested;
+
     //private Boolean
 
 //---------------------Relations-------------------------------
@@ -92,5 +95,8 @@ public class Trip {
     @JsonIgnore
     private BoatOwner boatOwner;
 
+
+    @ManyToOne
+    private  Customer customer;
 
 }

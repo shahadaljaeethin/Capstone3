@@ -70,4 +70,8 @@ public class Customer {
     @JsonIgnore
     private Set<BookTrip> bookTripSet;
 
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "customer")
+    @JsonIgnore
+    private  Set<Trip> myTrips;
 }

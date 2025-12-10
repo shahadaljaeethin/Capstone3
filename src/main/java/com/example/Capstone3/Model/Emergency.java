@@ -34,11 +34,6 @@ public class Emergency {
     @Column(columnDefinition = "varchar(15) not null")
     private String rel;
 
-   // private String
-
-//    @Column(columnDefinition = "varchar(255)")
-//    private String lastKnownLocation;
-
 //-------------------------------------------
     @OneToOne
     @MapsId

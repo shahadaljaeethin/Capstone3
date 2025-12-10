@@ -44,6 +44,12 @@ public class BoatOwner {
     @Column(columnDefinition = "varchar(30) not null")
     private String password;
 
+    @NotEmpty(message = "*enter email")
+    @Size(max = 45 , message = "*email too long")
+    @Email
+    @Column(columnDefinition = "varchar(45) not null unique")
+    private String email;
+
     @NotEmpty(message = "*enter phone number")
     @Size(min = 10, max = 10, message = "*phone number must be 10 digits")
     @Pattern(regexp = "^05[0-9]{8}$", message = "*phone number must start with 05xxxxxx")
@@ -56,8 +62,7 @@ public class BoatOwner {
     @Column(columnDefinition = "varchar(50) not null unique")
     private String licenseNumber;
 
-    @NotEmpty(message = "*enter status")
-    @Pattern(regexp = "^(PENDING|ACTIVE)$", message = "*status must be PENDING, ACTIVE or INACTIVE")
+    @Pattern(regexp = "^(PENDING|ACTIVE)$", message = "*status must be PENDING, ACTIVE")
     @Column(columnDefinition = "varchar(20) not null default 'PENDING'")
     private String status = "PENDING";
 
