@@ -17,6 +17,7 @@ public class SendMailService {
     @Autowired
     private JavaMailSender javaEmailSender;
 
+
     public void sendMessage(){
 
         String body = "any body";

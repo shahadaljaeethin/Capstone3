@@ -58,10 +58,10 @@ public class Boat {
     @Size(max = 300, message = "*description too long (max 300 characters)")
     @Column(columnDefinition = "varchar(300)")
     private String description;
-
-    @OneToMany(mappedBy = "boat", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<Review> reviews;
+//
+//    @OneToMany(mappedBy = "boat", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private Set<Review> reviews;
 
 
 //--------------------------------------------------

@@ -101,7 +101,7 @@ public class BookTripService {
                             "- From: " + trip.getStartLocation() + "\n" +
                             "- To: " + trip.getDestinationLocation() + "\n\n" +
                             "Enjoy your trip 🌊🚤";
-
+                            //come back before endDate
             sendMailService.sendMessage(customer.getEmail(), subject, body);
         }
     }

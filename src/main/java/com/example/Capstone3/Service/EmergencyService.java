@@ -32,7 +32,7 @@ public class EmergencyService {
         if(emergency==null) throw new ApiException("emergeny contact not found");
         emergency.setName(edit.getName());
        // emergency.setRel(edit.getDescription());
-        emergency.setLastKnownLocation(edit.getLastKnownLocation());
+        //emergency.setLastKnownLocation(edit.getLastKnownLocation());
         emergencyRepository.save(emergency);
 
     }

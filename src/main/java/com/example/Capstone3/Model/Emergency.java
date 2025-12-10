@@ -36,8 +36,8 @@ public class Emergency {
 
    // private String
 
-    @Column(columnDefinition = "varchar(255)")
-    private String lastKnownLocation;
+//    @Column(columnDefinition = "varchar(255)")
+//    private String lastKnownLocation;
 
 //-------------------------------------------
     @OneToOne

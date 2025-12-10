@@ -36,14 +36,7 @@ public class ReviewService {
         if (customer == null) {
             throw new ApiException("Customer not found");
         }
-
-        Review oldReview = reviewRepository.findReviewByBoatIdAndCustomerId(ownerId, customerId);
-
-        if (oldReview != null) {
-            throw new ApiException("Customer already reviewed this boat");
-        }
-
-            review.setBoatOwner(owner);
+        review.setBoatOwner(owner);
         review.setCustomer(customer);
 
         reviewRepository.save(review);
