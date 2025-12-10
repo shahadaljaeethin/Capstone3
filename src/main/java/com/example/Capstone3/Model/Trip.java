@@ -44,6 +44,9 @@ public class Trip {
     @Column(columnDefinition = "dateTime not null")
     private LocalDateTime endDate;
 
+    @Column(columnDefinition = "dateTime not null")
+    private LocalDateTime ndDate;
+
     @NotEmpty(message = "Start location cannot be empty" )
     @Column(columnDefinition = "varchar(90) not null")
     private String startLocation;
@@ -61,8 +64,8 @@ public class Trip {
     @Column(columnDefinition = "varchar(10) not null")
     private String status;
 
-    @Column(columnDefinition = "bigint") //int
-    private long totalPrice;
+    @Column(columnDefinition = "BIGINT ") //int
+    private Long totalPrice;
 
 //---------------------Relations-------------------------------
 
@@ -88,4 +91,5 @@ public class Trip {
     private BoatOwner boatOwner;
 
 
+    //actualEndTime
 }

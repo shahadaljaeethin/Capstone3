@@ -28,7 +28,7 @@ public class EmergencyService {
     public void updateEmergency(Integer id,Emergency edit){
 
         Emergency emergency = emergencyRepository.findEmergencyById(id);
-        if(emergency==null) throw new ApiException("emergeny contact not found");
+        if(emergency==null) throw new ApiException("Emergency contact not found");
         emergency.setName(edit.getName());
         emergency.setDescription(edit.getDescription());
         emergency.setLastKnownLocation(edit.getLastKnownLocation());
@@ -38,7 +38,7 @@ public class EmergencyService {
 
     public void deleteEmergency(Integer id){
         Emergency emergency = emergencyRepository.findEmergencyById(id);
-        if(emergency==null) throw new ApiException("emergeny contact not found");
+        if(emergency==null) throw new ApiException("Emergency contact not found");
         emergencyRepository.delete(emergency);
     }
 }

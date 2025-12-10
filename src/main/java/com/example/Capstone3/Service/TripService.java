@@ -44,8 +44,8 @@ public class TripService {
         }
         trip.setBoat(boat);
         trip.setBoatOwner(boatOwner);
-        Long DurationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
-        trip.setTotalPrice(DurationHours*trip.getBoat().getPricePerHour());
+        Long durationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
+        trip.setTotalPrice(durationHours*trip.getBoat().getPricePerHour());
         tripRepository.save(trip);
     }
 

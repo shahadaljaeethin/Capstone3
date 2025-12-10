@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table
 public class Review {
 
     @Id
