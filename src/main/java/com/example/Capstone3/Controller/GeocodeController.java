@@ -20,4 +20,6 @@ public class GeocodeController {
     public ResponseEntity<?> getCoordinates(@PathVariable String place) {
         return ResponseEntity.status(200).body(geocodingService.getLocationCoordinates(place));
     }
+
+
 }

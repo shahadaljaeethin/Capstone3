@@ -135,6 +135,47 @@ public class TripService {
             sendMailService.sendMessage(boatOwner.getEmail(), subject, body);
     }
 
+    public void approveTripRequest(Integer boatOwnerId , Integer tripId){
+        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(boatOwnerId);
+        Trip trip = tripRepository.findTripById(tripId);
+        Customer customer = trip.getCustomer();
+        if(boatOwner == null ){
+            throw new ApiException("Boat owner not found");
+        }
+        if(!trip.getBoatOwner().equals(boatOwner)){
+            throw new ApiException("Boat owner not unauthorized to approve this trip");
+        }
+        trip.setStatus("Upcoming");
+        customer.getMyTrips().add(trip);
+        tripRepository.save(trip);
+        customerRepository.save(customer);
+
+        String subject = "Customized Trip Accepted ✅";
+
+        String body =
+                "Hello " + customer.getName() + ",\n\n" +
+                        "Your request for the customized trip:\n" +
+                        trip.getTitle() + "\n\n" +
+                        "Has been ACCEPTED successfully ✅\n\n" +
+                        "Trip Details:\n" +
+                        "- Start: " + trip.getStartDate() + "\n" +
+                        "- From: " + trip.getStartLocation() + "\n" +
+                        "- To: " + trip.getDestinationLocation() + "\n\n" +
+                        "Enjoy your trip 🌊🚤";
+
+        sendMailService.sendMessage(customer.getEmail(), subject, body);
+    }
+
+
+
+    public List<Trip> getTripsByStatus(String status){
+       return tripRepository.findTripByStatus(status);
+    }
+
+    public List<Trip> getTripsByDestinationLocation(String destinationLocation){
+        return tripRepository.findTripByDestinationLocation(destinationLocation);
+    }
+
         //------------------------------------------------
 
     public Map<Trip, Timer> timers = new HashMap<>();
