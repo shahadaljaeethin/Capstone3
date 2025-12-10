@@ -56,9 +56,8 @@ public class BoatOwner {
     @Column(columnDefinition = "varchar(50) not null unique")
     private String licenseNumber;
 
-    //*********do we need inactive state for owner ?
     @NotEmpty(message = "*enter status")
-    @Pattern(regexp = "^(PENDING|ACTIVE|INACTIVE)$", message = "*status must be PENDING, ACTIVE or INACTIVE")
+    @Pattern(regexp = "^(PENDING|ACTIVE)$", message = "*status must be PENDING, ACTIVE or INACTIVE")
     @Column(columnDefinition = "varchar(20) not null default 'PENDING'")
     private String status = "PENDING";
 

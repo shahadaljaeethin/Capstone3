@@ -43,10 +43,5 @@ public class Emergency {
     @OneToOne
     @MapsId
     @JsonIgnore
-    private Trip trip;
-
-    @OneToOne
-    @MapsId
-    @JsonIgnore
     private Customer customer;
 }

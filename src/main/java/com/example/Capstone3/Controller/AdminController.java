@@ -14,13 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final SendMailService test;//********************DELETE THIS LINE AFTER THE TEST******************************
     private final AdminService adminService;
 
     @GetMapping("/get")
     public ResponseEntity<?> getAdmins(){
-           test.sendMessage();
-        return ResponseEntity.status(200).body(adminService.getAdmins());
+      return ResponseEntity.status(200).body(adminService.getAdmins());
     }
 
     @PostMapping("/add")
