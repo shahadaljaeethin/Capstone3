@@ -21,16 +21,13 @@ public class ReviewController {
     }
 
     @PostMapping("/add/{ownerId}/{customerId}")
-    public ResponseEntity<?> addReview(@PathVariable Integer ownerId,
-                                       @PathVariable Integer customerId,
-                                       @RequestBody @Valid Review review) {
+    public ResponseEntity<?> addReview(@PathVariable Integer ownerId, @PathVariable Integer customerId, @RequestBody @Valid Review review) {
         reviewService.addReview(ownerId, customerId, review);
         return ResponseEntity.status(200).body(new ApiResponse("Review added successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateReview(@PathVariable Integer id,
-                                          @RequestBody @Valid Review review) {
+    public ResponseEntity<?> updateReview(@PathVariable Integer id, @RequestBody @Valid Review review) {
         reviewService.updateReview(id, review);
         return ResponseEntity.status(200).body(new ApiResponse("Review updated successfully"));
     }
