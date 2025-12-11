@@ -146,4 +146,8 @@ public class BookTripService {
             sendMailService.sendMessage(customer.getEmail(), subject, body);
         }
     }
+
+
+
+    public List<BookTrip> getPendingRequestForTrip(Integer tripId){return bookTripRepository.findBookTripByStatusAndTrip_Id("PENDING",tripId);}
 }

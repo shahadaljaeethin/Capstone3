@@ -1,6 +1,7 @@
 package com.example.Capstone3.Service;
 
 import com.example.Capstone3.Api.ApiException;
+import com.example.Capstone3.Api.ApiResponse;
 import com.example.Capstone3.Model.*;
 import com.example.Capstone3.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -353,7 +354,7 @@ public class TripService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime end = date.atStartOfDay();
         long delayMillis = Duration.between(now, end).toMillis();
-        if (delayMillis <= 0) throw new ApiException("");
+        if (delayMillis <= 0) throw new ApiException(""); ////**********
 
         timer.schedule(new TimerTask() {
             @Override
@@ -368,4 +369,41 @@ public class TripService {
     }
 
 
+    public ApiResponse tripPreAskDate(Integer tripId, LocalDateTime start, LocalDateTime end){
+
+    Trip trip = tripRepository.findTripById(tripId);
+    if(trip==null) throw new ApiException("Trip not found");
+    if(end.isBefore(start)) throw new ApiException("*end date must be after start date");
+
+
+
+        Long DurationHours = Duration.between(start, end).toHours();
+        Long newPrice = DurationHours * trip.getBoat().getPricePerHour();
+
+        return new ApiResponse("The expected price is : "+newPrice);
+    }
+
+
+    public void tripAskDate(Integer tripId,Integer customerId,LocalDateTime start,LocalDateTime end){
+
+        Customer customer = customerRepository.findCustomerById(customerId);
+        Trip trip = tripRepository.findTripById(tripId);
+        if(trip==null||customer==null) throw new ApiException("Trip or customer not found");
+        if(end.isBefore(start)) throw new ApiException("*end date must be after start date");
+
+        Long DurationHours = Duration.between(start, end).toHours();
+        Long newPrice = DurationHours * trip.getBoat().getPricePerHour();
+        String title = "Changing Trip Date Request";
+        String body = "Request from the customer "+customer.getName()+"\n" +
+                "To change date of trip "+trip.getTitle()+" #"+trip.getId()+"\n" +
+                "To be  ["+start+"-"+end+"] after it was ["+trip.getStartDate()+"-"+trip.getEndDate()+"]\n" +
+                "The new price : "+newPrice ;
+
+        sendMailService.sendMessage(trip.getBoatOwner().getEmail(),title,body);
+
+    }
+
+
+
+    public Trip getTribByOwner(Integer owner){return tripRepository.findTripByBoatOwner_Id(owner);}
 }
