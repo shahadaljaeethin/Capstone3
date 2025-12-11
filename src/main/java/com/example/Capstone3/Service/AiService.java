@@ -70,7 +70,7 @@ public class AiService {
         userPrompt.append("title=").append(trip.getTitle()).append("\n");
         userPrompt.append("type=").append(trip.getTripType()).append("\n");
         userPrompt.append("description=").append(trip.getDescription()).append("\n");
-        userPrompt.append("fishingGear=").append(trip.isFishingGear()).append("\n");
+        userPrompt.append("fishingGear=").append(trip.getFishingGear()).append("\n");
         userPrompt.append("startLocation=").append(trip.getStartLocation()).append("\n");
         userPrompt.append("destinationLocation=").append(trip.getDestinationLocation()).append("\n");
         userPrompt.append("endLocation=").append(trip.getEndLocation()).append("\n");
@@ -216,7 +216,7 @@ public class AiService {
             tripListPrompt.append("Trip ID: ").append(trip.getId())
                     .append(", Destination: ").append(trip.getDestinationLocation())
                     .append(", Trip Type: ").append(trip.getTripType())
-                    .append(", Fishing Gear: ").append(trip.isFishingGear())
+                    .append(", Fishing Gear: ").append(trip.getFishingGear())
                     .append("\n");
         }
 

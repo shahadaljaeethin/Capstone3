@@ -60,6 +60,9 @@ public class BoatOwnerService {
         if(admin == null || boatOwner == null){
             throw new ApiException("admin or boat owner not found");
         }
+        if(boatOwner.getStatus().equalsIgnoreCase("ACTIVE"))  throw new ApiException("owner is already active account");
+
+
         boatOwner.setStatus("ACTIVE");
         boatOwnerRepository.save(boatOwner);
     }

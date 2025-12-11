@@ -41,7 +41,7 @@ public class Trip {
 
     @NotNull(message = "Fishing gear cannot be empty")
     @Column(columnDefinition = "TINYINT not null")
-    private boolean fishingGear;
+    private Boolean fishingGear;
 
     @NotNull(message = "Start date cannot be empty" )
     @Column(columnDefinition = "dateTime not null")
@@ -63,8 +63,8 @@ public class Trip {
     @Column(columnDefinition = "varchar(90) not null")
     private String endLocation;
 
-
-    @Pattern(regexp = "^(Upcoming | Ongoing | Completed | Request)$", message = "Status must be either Upcoming, Ongoing or Completed")
+    //these spaces affected Post-man
+    @Pattern(regexp = "^(Upcoming|Ongoing|Completed|Request)$", message = "Status must be either Upcoming, Ongoing or Completed")
     @Column(columnDefinition = "varchar(10) not null")
     private String status;
 

@@ -45,7 +45,7 @@ public class TripService {
         if (boatOwner.getStatus().equalsIgnoreCase("SUSPENDED")) {
             throw new ApiException("This boat owner cannot add trip his account must be active");
         }
-        if (!boatOwner.getBoats().contains(trip.getBoat())) {
+        if (!boatOwner.getBoats().contains(boat)) {
             throw new ApiException("The boat owner cannot add this trip because he does not have the appropriate boat");
         }
 
@@ -53,6 +53,12 @@ public class TripService {
         Long DurationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
         if(DurationHours < 2) throw new ApiException("minimum duration for a trip is two hours");
 
+        //*****************************************************************
+        //********* set boat status to un available **********************
+
+
+        trip.setIsRequested(false);
+        trip.setStatus("Upcoming");
         trip.setBoat(boat);
         trip.setBoatOwner(boatOwner);
 
@@ -89,7 +95,7 @@ public class TripService {
 
         oldTrip.setTitle(trip.getTitle());
         oldTrip.setTripType(trip.getTripType());
-        oldTrip.setFishingGear(trip.isFishingGear());
+        oldTrip.setFishingGear(trip.getFishingGear());
         oldTrip.setStartDate(trip.getStartDate());
         oldTrip.setEndDate(trip.getEndDate());
         oldTrip.setStartLocation(trip.getStartLocation());
@@ -275,6 +281,11 @@ public class TripService {
 
         if (!trip.getStatus().equals("Ongoing")) throw new ApiException("trip is not in Ongoing state");
 
+
+        //*****************************************************************
+        //********* set boat status to available **********************
+
+
         trip.setStatus("Completed");
         tripRepository.save(trip);
 
@@ -293,7 +304,7 @@ public class TripService {
                 trip.getTitle(),
                 trip.getDescription(),
                 trip.getTripType(),
-                trip.isFishingGear(),
+                trip.getFishingGear(),
                 trip.getStartDate(),
                 trip.getEndDate(),
                 trip.getStartLocation(),
