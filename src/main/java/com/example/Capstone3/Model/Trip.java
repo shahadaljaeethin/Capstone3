@@ -63,7 +63,7 @@ public class Trip {
     @Column(columnDefinition = "varchar(90) not null")
     private String endLocation;
 
-    @NotEmpty(message = "Status cannot be empty")
+
     @Pattern(regexp = "^(Upcoming | Ongoing | Completed | Request)$", message = "Status must be either Upcoming, Ongoing or Completed")
     @Column(columnDefinition = "varchar(10) not null")
     private String status;

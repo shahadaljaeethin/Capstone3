@@ -33,10 +33,12 @@ public class BoatService {
         if (owner == null || category == null) {
             throw new ApiException("Owner or Category not found");
         }
+        if(owner.getStatus().equalsIgnoreCase("pending")) throw new ApiException("owner account not activated yet");
+
 
         boat.setOwner(owner);
         boat.setCategory(category);
-
+        boat.setStatus("AVAILABLE");
 
         boatRepository.save(boat);
     }

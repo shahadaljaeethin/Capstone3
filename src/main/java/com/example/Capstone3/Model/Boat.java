@@ -42,18 +42,10 @@ public class Boat {
 
     @Pattern(regexp = "^(AVAILABLE|NOT_AVAILABLE|MAINTENANCE)$",
             message = "*status must be AVAILABLE, NOT_AVAILABLE or MAINTENANCE")
-    @Column(columnDefinition = "varchar(20) not null default 'AVAILABLE'")
-    private String status = "AVAILABLE";
+    @Column(columnDefinition = "varchar(20) default 'AVAILABLE'")
+    private String status;
 
-    @NotNull(message = "*select owner")
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    private BoatOwner owner;
 
-    @NotNull(message = "*select category")
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
 
     @NotEmpty(message = "*enter description")
     @Size(max = 300, message = "*description too long (max 300 characters)")
@@ -65,4 +57,14 @@ public class Boat {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "boat")
     @JsonIgnore
     private Set<Trip> tripSet;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private BoatOwner owner;
+
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
 }

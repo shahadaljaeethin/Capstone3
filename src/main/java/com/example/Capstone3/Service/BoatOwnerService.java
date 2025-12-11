@@ -22,6 +22,7 @@ public class BoatOwnerService {
     }
 
     public void addOwner(BoatOwner boatOwner){
+        boatOwner.setStatus("PENDING");
         boatOwnerRepository.save(boatOwner);
     }
 
