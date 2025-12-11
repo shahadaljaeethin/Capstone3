@@ -2,10 +2,14 @@ package com.example.Capstone3.Controller;
 import com.example.Capstone3.Api.ApiResponse;
 import com.example.Capstone3.Model.Trip;
 import com.example.Capstone3.Service.TripService;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/trip")
@@ -80,6 +84,42 @@ public class TripController {
         return ResponseEntity.status(200).body(new ApiResponse("Emergency request send to Owner and Emergency contact successfully"));
     }
 
+    @PutMapping("/start trip/{ownerId}/{tripId}")
+    public ResponseEntity<?> startTrip(@PathVariable Integer tripId,@PathVariable Integer ownerId){
+    tripService.startTrip(tripId,ownerId);
+     return ResponseEntity.status(200).body(new ApiResponse("Trip started"));
+    }
+    @PutMapping("/start trip/{ownerId}/{tripId}")
+    public ResponseEntity<?> endTrip(@PathVariable Integer tripId,@PathVariable Integer ownerId){
+        tripService.endTrip(tripId,ownerId);
+        return ResponseEntity.status(200).body(new ApiResponse("Trip completed"));
+    }
+    //**************************************************************************************** NOT COMPLETED SERVICE
+    @GetMapping("/recommend trip/{query}")
+    public ResponseEntity<?> recommendMeTrip(@PathVariable String query){
+        return ResponseEntity.status(200).body(tripService.recommendationTrips(query));
+    }
+    //****************************************************************************************
 
+    @PutMapping("/set discount/owner{ownerId}/trip{tripId}/{discountPrec}/date{date}")
+    public ResponseEntity<?> discountTripTilLDate(@PathVariable Integer tripId, @PathVariable Integer ownerId, @PathVariable Double discountPrec, @PathVariable LocalDate date){
+    tripService.discountTripTillDate(tripId,ownerId,discountPrec,date);
+    return ResponseEntity.status(200).body(new ApiResponse("Trip set on discount till "+date));
+    }
 
+    @GetMapping("/pre ask/trip{tripId}/{start}/{end}")
+    public ResponseEntity<?> tripPreAskDate(@PathVariable Integer tripId,@PathVariable LocalDateTime start,@PathVariable LocalDateTime end){
+        return ResponseEntity.status(200).body(tripService.tripPreAskDate(tripId,start,end));
+    }
+    //*********Put?
+    @PostMapping("/ask changing date/customer{customerId}/trip{tripId}/{start}/{end}")
+    public ResponseEntity<?> tripAskDate(@PathVariable Integer tripId,@PathVariable Integer customerId,@PathVariable LocalDateTime start,@PathVariable LocalDateTime end) {
+    tripService.tripAskDate(tripId,customerId,start,end);
+    return ResponseEntity.status(200).body(new ApiResponse("Request send to trip owner"));
+    }
+
+    @GetMapping("/get trip by owner/{owner}")
+    public ResponseEntity<?> getTripByOwner(@PathVariable Integer owner){
+        return ResponseEntity.status(200).body(tripService.getTribByOwner(owner));
+    }
 }

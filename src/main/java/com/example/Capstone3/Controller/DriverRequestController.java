@@ -37,4 +37,16 @@ public class DriverRequestController {
         driverRequestService.deleteDriverRequest(id);
         return ResponseEntity.status(200).body(new ApiResponse("Driver request deleted successfully"));
     }
+    //==============
+    @PutMapping("/accept/{driver}/{request}")
+    public ResponseEntity<?> acceptRequest(@PathVariable Integer driver,@PathVariable Integer request){
+    driverRequestService.acceptRequest(driver,request);
+        return ResponseEntity.status(200).body(new ApiResponse("Request accepted"));
+    }
+
+    @PutMapping("/apology/{driver}/{request}")
+    public ResponseEntity<?> rejectRequest(@PathVariable Integer driver,@PathVariable Integer request){
+        driverRequestService.apologizeRequest(driver,request);
+        return ResponseEntity.status(200).body(new ApiResponse("Request apology"));
+    }
 }
