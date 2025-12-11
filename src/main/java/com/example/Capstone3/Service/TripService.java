@@ -1,9 +1,13 @@
 package com.example.Capstone3.Service;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.example.Capstone3.Api.ApiException;
 import com.example.Capstone3.Api.ApiResponse;
+import com.example.Capstone3.DTO.TripDTO;
+import com.example.Capstone3.DTO.TripRecommAIDTO;
 import com.example.Capstone3.Model.*;
 import com.example.Capstone3.Repository.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +20,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class TripService {
 
+
     private final TripRepository tripRepository;
     private final BoatRepository boatRepository;
     private final BoatOwnerRepository boatOwnerRepository;
@@ -24,6 +29,7 @@ public class TripService {
     private final SendMailService sendMailService;
     private final EmergencyRepository emergencyRepository;
     private final GeocodingService geocodingService;
+    private final AiClient aiClient;
 
     public List<Trip> getTrips() {
         return tripRepository.findAll();
@@ -281,28 +287,57 @@ public class TripService {
         }
     }
 
+    public TripDTO toDTO(Trip trip) {
+        return new TripDTO(
+                trip.getId(),
+                trip.getTitle(),
+                trip.getDescription(),
+                trip.getTripType(),
+                trip.isFishingGear(),
+                trip.getStartDate(),
+                trip.getEndDate(),
+                trip.getStartLocation(),
+                trip.getDestinationLocation(),
+                trip.getEndLocation()
+        );
+    }
 
-    public ArrayList<Trip> recommendationTrips(String prompt) {
-        ArrayList<Trip> aiRecommendations = new ArrayList<>();
-        //fix repo
-        if (tripRepository.findTripByStatus("Upcoming").isEmpty()) return aiRecommendations;
+
+    public ArrayList<TripRecommAIDTO> recommendationTrips(String prompt) {
+
+        if (tripRepository.findTripByStatus("Upcoming").isEmpty()) return new ArrayList<>();
 
         // 1> create DTO for available trips to AI
         List<Trip> availableTrips = tripRepository.findTripByStatus("Upcoming");
+        ArrayList<TripDTO> dtoTrips = new ArrayList<>();
 
+        for(Trip t:availableTrips){
+            dtoTrips.add(toDTO(t));
+        }
 
         // 2> send prompt
-        prompt = "I want you to recommend me suitable cruise of these available trips, I want you to select the potential trip, so it could be one or more of potential trip that I am looking for " +
+        String system = "I want you to recommend user suitable cruise of these trips, I want you to select the potential trip, so it could be one or more of potential trip that might help user " +
+                "if there is no trip that are potential i am looking for from given list, answer me with the word NONE as text. else reply me only with this JSON " +
+                "[{\"id\": <tripId>, \"reason\": \"why this trip fits the user\"}]" +
+                "" +
+                " ,,, here is the list:" +dtoTrips+ " and here is description of user preferences : ";
 
-                "please answer me with trip Ids only separated by - , for example : 2-4-7-15 " +
-                "if there is no trip that are potential i am looking for from given list, I want you to reply me with -1 " +
-                "be direct and don't answer me anything but the final result for example 2-4-7-15 or -1 ,,, here is the list:" + " and here is description of my preferences : " + prompt;
-
+        String aiResponse = aiClient.callOpenAi(system,prompt);
 
         // 3> read result
+        if(aiResponse.equalsIgnoreCase("NONE")) return new ArrayList<>();
+        try {
 
+            ObjectMapper mapper = new ObjectMapper();
+            List<TripRecommAIDTO> parsed =
+                    mapper.readValue(aiResponse, new TypeReference<List<TripRecommAIDTO>>() {});
+            return new ArrayList<>(parsed);
 
-        return aiRecommendations;
+        } catch (Exception e) {
+            System.out.println("AI:"+e.getMessage());
+            return new ArrayList<>();
+        }
+
     }
 
     public void sendEmergency(Integer tripId,boolean byUser) {

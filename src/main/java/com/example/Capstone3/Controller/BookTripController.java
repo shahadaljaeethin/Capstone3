@@ -51,4 +51,9 @@ public class BookTripController {
         bookTripService.rejectBooking(ownerId, bookTripId);
         return ResponseEntity.status(200).body("Booking rejected successfully");
     }
+
+    @GetMapping("/pending of trip/{tripId}")
+    public ResponseEntity<?> getPendingRequest(@PathVariable Integer tripId) {
+        return ResponseEntity.status(200).body(bookTripService.getPendingRequestForTrip(tripId));
+    }
 }

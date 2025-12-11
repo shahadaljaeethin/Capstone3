@@ -20,18 +20,9 @@ public class BoatService {
     private final BoatOwnerRepository boatOwnerRepository;
     private final CategoryRepository categoryRepository;
 
-    // ✅ Get All
+
     public List<Boat> getAllBoats() {
         return boatRepository.findAll();
-    }
-
-    // ✅ Get By Id
-    public Boat getBoatById(Integer id) {
-        Boat boat = boatRepository.findBoatById(id);
-        if (boat == null) {
-            throw new ApiException("Boat not found");
-        }
-        return boat;
     }
 
     public void addBoat(Integer ownerId, Integer categoryId, Boat boat) {

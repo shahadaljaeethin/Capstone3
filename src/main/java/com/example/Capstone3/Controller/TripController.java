@@ -89,7 +89,7 @@ public class TripController {
     tripService.startTrip(tripId,ownerId);
      return ResponseEntity.status(200).body(new ApiResponse("Trip started"));
     }
-    @PutMapping("/start trip/{ownerId}/{tripId}")
+    @PutMapping("/end trip/{ownerId}/{tripId}")
     public ResponseEntity<?> endTrip(@PathVariable Integer tripId,@PathVariable Integer ownerId){
         tripService.endTrip(tripId,ownerId);
         return ResponseEntity.status(200).body(new ApiResponse("Trip completed"));

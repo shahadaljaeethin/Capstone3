@@ -64,7 +64,7 @@ public class AiService {
 
         StringBuilder userPrompt = new StringBuilder();
 
-        // ✅ Trip info فقط (بدون Boat)
+
         userPrompt.append("Trip info:\n");
         userPrompt.append("id=").append(trip.getId()).append("\n");
         userPrompt.append("title=").append(trip.getTitle()).append("\n");
