@@ -312,8 +312,8 @@ public class TripService {
                 trip.getDescription(),
                 trip.getTripType(),
                 trip.getFishingGear(),
-                trip.getStartDate(),
-                trip.getEndDate(),
+                trip.getStartDate().toString(),
+                trip.getEndDate().toString(),
                 trip.getStartLocation(),
                 trip.getDestinationLocation(),
                 trip.getEndLocation()
@@ -332,21 +332,44 @@ public class TripService {
         for(Trip t:availableTrips){
             dtoTrips.add(toDTO(t));
         }
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+             String tripsJson = mapper.writeValueAsString(dtoTrips);
+            System.out.println("**********\n" + tripsJson);
+
+
+
+
+
+
         System.out.println("**********\n"+dtoTrips);
         // 2> send prompt
         String system = "I want you to recommend user suitable cruise of these trips, I want you to select the potential trip, so it could be one or more of potential trip that might help user " +
                 "if there is no trip that are potential i am looking for from given list, answer me with the word NONE as text. else reply me only with this JSON " +
-                "[{\"id\": <tripId>, \"reason\": \"why this trip fits the user\"}]" +
-                "" +
-                " ,,, here is the list:" +dtoTrips+ " and here is description of user preferences : ";
+                "[{ " +
+                "  \"trip\": { " +
+                "    \"id\": number, " +
+                "    \"title\": string, " +
+                "    \"description\": string, " +
+                "    \"tripType\": string, " +
+                "    \"fishingGear\": boolean, " +
+                "    \"startDate\": string, " +
+                "    \"endDate\": string, " +
+                "    \"startLocation\": string, " +
+                "    \"destinationLocation\": string, " +
+                "    \"endLocation\": string " +
+                "  }, " +
+                "  \"reason\": string " +
+                "}] " +
+                " ,,, here is the list:" +tripsJson+ " and here is description of user preferences : ";
 
         String aiResponse = aiClient.callOpenAi(system,prompt);
 
         // 3> read result
         if(aiResponse.equalsIgnoreCase("NONE")) return new ArrayList<>();
-        try {
 
-            ObjectMapper mapper = new ObjectMapper();
+
+
             List<TripRecommAIDTO> parsed =
                     mapper.readValue(aiResponse, new TypeReference<List<TripRecommAIDTO>>() {});
             return new ArrayList<>(parsed);
@@ -460,7 +483,7 @@ public class TripService {
 
 
 
-    public Trip getTribByOwner(Integer owner){
+    public List<Trip> getTribByOwner(Integer owner){
         return tripRepository.findTripByBoatOwner_Id(owner);
     }
 }

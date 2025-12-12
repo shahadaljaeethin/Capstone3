@@ -18,8 +18,8 @@ public class TripDTO {
     private String description;
     private String tripType;
     private Boolean fishingGear;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String startDate;
+    private String endDate;
     private String startLocation;
     private String destinationLocation;
     private String endLocation;
