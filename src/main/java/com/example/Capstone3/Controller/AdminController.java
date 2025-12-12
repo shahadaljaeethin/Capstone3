@@ -3,7 +3,6 @@ package com.example.Capstone3.Controller;
 import com.example.Capstone3.Api.ApiResponse;
 import com.example.Capstone3.Model.Admin;
 import com.example.Capstone3.Service.AdminService;
-import com.example.Capstone3.Service.SendMailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,8 @@ public class AdminController {
 
     @GetMapping("/get")
     public ResponseEntity<?> getAdmins(){
-      return ResponseEntity.status(200).body(adminService.getAdmins());
+
+        return ResponseEntity.status(200).body(adminService.getAdmins());
     }
 
     @PostMapping("/add")

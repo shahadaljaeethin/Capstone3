@@ -48,9 +48,9 @@ public class TripController {
         return ResponseEntity.status(200).body(new ApiResponse("Trip deleted successfully"));
     }
 
-    @PostMapping("/request-customized-trip/{customerId}/{boatOwnerId}/{boatId}")
-    public  ResponseEntity<?> customizedTrip(@PathVariable Integer customerId ,@PathVariable Integer boatOwnerId,@PathVariable Integer boatId,@RequestBody @Valid Trip trip){
-        tripService.requestCustomizedTrip(customerId,boatOwnerId, boatId,trip);
+    @PostMapping("/request-customized-trip/{customerId}/{boatOwnerId}")
+    public  ResponseEntity<?> customizedTrip(@PathVariable Integer customerId ,@PathVariable Integer boatOwnerId,@RequestBody @Valid Trip trip){
+        tripService.requestCustomizedTrip(customerId,boatOwnerId, trip);
         return ResponseEntity.status(200).body(new ApiResponse("Request customized trip send to boat owner successfully"));
     }
 
@@ -77,7 +77,7 @@ public class TripController {
     }
 
 
-
+    //Is post mapping ? or get , for real
     @PostMapping("/send emergency/{tripId}")
     public ResponseEntity<?> sendEmergency(@PathVariable Integer tripId){
     tripService.sendEmergency(tripId,true);
@@ -94,12 +94,12 @@ public class TripController {
         tripService.endTrip(tripId,ownerId);
         return ResponseEntity.status(200).body(new ApiResponse("Trip completed"));
     }
-
+    //**************************************************************************************** NOT COMPLETED SERVICE
     @GetMapping("/recommend trip/{query}")
     public ResponseEntity<?> recommendMeTrip(@PathVariable String query){
         return ResponseEntity.status(200).body(tripService.recommendationTrips(query));
     }
-
+    //****************************************************************************************
 
     @PutMapping("/set discount/owner{ownerId}/trip{tripId}/{discountPrec}/date{date}")
     public ResponseEntity<?> discountTripTilLDate(@PathVariable Integer tripId, @PathVariable Integer ownerId, @PathVariable Double discountPrec, @PathVariable LocalDate date){
@@ -111,8 +111,8 @@ public class TripController {
     public ResponseEntity<?> tripPreAskDate(@PathVariable Integer tripId,@PathVariable LocalDateTime start,@PathVariable LocalDateTime end){
         return ResponseEntity.status(200).body(tripService.tripPreAskDate(tripId,start,end));
     }
-
-    @PostMapping("/ask changing date/customer{customerId}/trip{tripId}/{start}/{end}")
+    //*********Put?
+    @PutMapping("/ask changing date/customer{customerId}/trip{tripId}/{start}/{end}")
     public ResponseEntity<?> tripAskDate(@PathVariable Integer tripId,@PathVariable Integer customerId,@PathVariable LocalDateTime start,@PathVariable LocalDateTime end) {
     tripService.tripAskDate(tripId,customerId,start,end);
     return ResponseEntity.status(200).body(new ApiResponse("Request send to trip owner"));

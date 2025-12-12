@@ -10,4 +10,6 @@ public interface BookTripRepository extends JpaRepository<BookTrip, Integer> {
     BookTrip findBookTripById(Integer id);
 
     List<BookTrip> findBookTripByStatusAndTrip_Id(String status,Integer tripId);
+
+
 }

@@ -18,7 +18,7 @@ public class BoatController {
     private final BoatService boatService;
 
     @GetMapping("/get")
-    public ResponseEntity<List<Boat>> getAllBoats() {
+    public ResponseEntity<?> getAllBoats() {
         return ResponseEntity.status(200).body(boatService.getAllBoats());
     }
 

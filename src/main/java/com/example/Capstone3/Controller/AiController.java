@@ -38,4 +38,6 @@ public class AiController {
         return ResponseEntity.status(200).body(aiService.getTripsByFishType(fishType));
     }
 
+
+
 }
