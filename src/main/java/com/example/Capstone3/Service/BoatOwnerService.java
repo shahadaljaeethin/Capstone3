@@ -38,6 +38,7 @@ public class BoatOwnerService {
         oldOwner.setAbout(boatOwner.getAbout());
         oldOwner.setPassword(boatOwner.getPassword());
         oldOwner.setPhone(boatOwner.getPhone());
+        oldOwner.setEmail(boatOwner.getEmail());
         oldOwner.setLicenseNumber(boatOwner.getLicenseNumber());
         oldOwner.setStatus(boatOwner.getStatus());
 

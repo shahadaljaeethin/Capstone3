@@ -32,10 +32,8 @@ public class Trip {
     @Column(columnDefinition = "varchar(400) not null")
     private String description;
 
-
-
-    @NotEmpty(message = "Full name cannot be empty")
-    @Pattern(regexp = "^(Fishing trip | Recreational trip)$", message = "Trip type must be either Fishing trip or Recreational trip")
+    @NotEmpty(message = "Trip type cannot be empty")
+    @Pattern(regexp = "^(Fishing|Recreational)$", message = "Trip type must be either Fishing trip or Recreational trip")
     @Column(columnDefinition = "varchar(80) not null")
     private String tripType;
 
@@ -63,9 +61,8 @@ public class Trip {
     @Column(columnDefinition = "varchar(90) not null")
     private String endLocation;
 
-    //these spaces affected Post-man
-    @Pattern(regexp = "^(Upcoming|Ongoing|Completed|Request)$", message = "Status must be either Upcoming, Ongoing or Completed")
-    @Column(columnDefinition = "varchar(10) not null")
+    @Pattern(regexp = "^(Upcoming|Ongoing|Completed|Request)$", message = "Status must be either Upcoming, Ongoing , Completed or Request")
+    @Column(columnDefinition = "varchar(10) ")
     private String status;
 
     @Column(columnDefinition = "bigint") //int

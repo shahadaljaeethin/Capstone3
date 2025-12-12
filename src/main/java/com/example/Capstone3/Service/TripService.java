@@ -120,38 +120,35 @@ public class TripService {
 
     //===============================================================================================
 
-    public void requestCustomizedTrip(Integer customerId , Trip trip){
+    public void requestCustomizedTrip(Integer customerId,Integer boatOwnerId , Trip trip){
         Customer customer = customerRepository.findCustomerById(customerId);
-        if(customer == null){
-            throw  new ApiException("Customer not found");
+        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(boatOwnerId);
+
+        if(customer == null || boatOwner == null){
+            throw  new ApiException("Customer or boat owner  not found");
         }
         trip.setStatus("Request");
         trip.setIsRequested(true);
         trip.setCustomer(customer);
+        trip.setBoatOwner(boatOwner);
         tripRepository.save(trip);
 
         //Email
-        BoatOwner boatOwner = trip.getBoatOwner();
+        String subject = "New Trip Request";
 
-        if (boatOwner == null) {
-            throw new ApiException("Boat owner not found");
-        }
+        String body =
+                "Hello " + boatOwner.getFullName() + ",\n\n" +
+                        "There is a new trip request:\n" +
+                        trip.getTitle() + "\n\n" +
+                        "from: "+customer.getName() +
+                        "Trip Details:\n" +
+                        "- Start: " + trip.getStartDate() + "\n" +
+                        "- End: " + trip.getEndDate() +
+                        "- From: " + trip.getStartLocation() + "\n" +
+                        "- To: " + trip.getDestinationLocation() + "\n\n"
+                ;
 
-            String subject = "New Trip Request";
-
-            String body =
-                    "Hello " + boatOwner.getFullName() + ",\n\n" +
-                            "There is a new trip request:\n" +
-                            trip.getTitle() + "\n\n" +
-                            "from: "+customer.getName() +
-                            "Trip Details:\n" +
-                            "- Start: " + trip.getStartDate() + "\n" +
-                            "- End: " + trip.getEndDate() +
-                            "- From: " + trip.getStartLocation() + "\n" +
-                            "- To: " + trip.getDestinationLocation() + "\n\n"
-                            ;
-
-            sendMailService.sendMessage(boatOwner.getEmail(), subject, body);
+        sendMailService.sendMessage(boatOwner.getEmail(), subject, body);
     }
 
     public void approveCustomizedTrip(Integer boatOwnerId , Integer tripId){
@@ -451,5 +448,7 @@ public class TripService {
 
 
 
-    public Trip getTribByOwner(Integer owner){return tripRepository.findTripByBoatOwner_Id(owner);}
+    public Trip getTribByOwner(Integer owner){
+        return tripRepository.findTripByBoatOwner_Id(owner);
+    }
 }
