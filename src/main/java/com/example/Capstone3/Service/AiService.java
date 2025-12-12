@@ -1,12 +1,14 @@
 package com.example.Capstone3.Service;
 
 import com.example.Capstone3.Api.ApiException;
-import com.example.Capstone3.DTO.SuggestedTripsBasedOnFishDTO;
-import com.example.Capstone3.DTO.TripInfoSummaryDTO;
-import com.example.Capstone3.DTO.TripRouteAdviceDTO;
-import com.example.Capstone3.DTO.TripSafetyGuideDTO;
+import com.example.Capstone3.DTO.*;
+import com.example.Capstone3.Model.Boat;
+import com.example.Capstone3.Model.Review;
 import com.example.Capstone3.Model.Trip;
+import com.example.Capstone3.Repository.BoatRepository;
+import com.example.Capstone3.Repository.ReviewRepository;
 import com.example.Capstone3.Repository.TripRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ public class AiService {
 
     private final AiClient aiClient;
     private final TripRepository tripRepository;
+    private final ReviewRepository reviewRepository ;
+    private final BoatRepository boatRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public TripRouteAdviceDTO getTripRouteAdvice(Integer tripId) {
@@ -254,6 +258,111 @@ public class AiService {
             throw new ApiException("Failed to generate trip fishing suggestions: " + e.getMessage());
         }
     }
+
+
+    public ReviewAnalysisDTO analyzeAllReviews() {
+
+        List<Review> reviews = reviewRepository.findAll();
+        if (reviews.isEmpty()) {
+            throw new ApiException("No reviews found");
+        }
+
+        StringBuilder reviewData = new StringBuilder();
+        for (Review r : reviews) {
+            reviewData.append("Rating: ").append(r.getRating()).append("\n");
+            reviewData.append("Comment: ").append(r.getComment()).append("\n\n");
+        }
+
+        String systemPrompt = """
+        You are an AI specialized in service quality analytics.
+        Your job is to analyze customer reviews and extract insights.
+
+        You MUST return ONLY valid JSON. No explanations.
+
+        JSON format:
+        {
+          "totalReviews": <int>,
+          "averageRating": <float>,
+          "commonComplaints": ["...", "..."],
+          "commonPraises": ["...", "..."],
+          "improvementSuggestions": ["...", "..."],
+          "strengths": ["...", "..."]
+        }
+        """;
+
+        String userPrompt =
+                "Here are all customer reviews:\n\n" +
+                        reviewData +
+                        "\nAnalyze them and provide insights based ONLY on the reviews.";
+
+        try {
+            String aiResponse = aiClient.callOpenAi(systemPrompt, userPrompt);
+            ReviewAnalysisDTO dto = objectMapper.readValue(aiResponse, ReviewAnalysisDTO.class);
+
+            return dto;
+
+        } catch (Exception e) {
+            throw new ApiException("Failed to analyze reviews: " + e.getMessage());
+        }
+    }
+
+    public List<BoatRecommendationDTO> recommendBoats(String userPromptText) {
+
+        List<Boat> boats = boatRepository.findAll();
+        if (boats.isEmpty()) {
+            throw new ApiException("No boats found");
+        }
+
+        StringBuilder boatList = new StringBuilder();
+        for (Boat b : boats) {
+            boatList.append("Boat ID: ").append(b.getId()).append("\n");
+            boatList.append("Name: ").append(b.getName()).append("\n");
+            boatList.append("Capacity: ").append(b.getCapacity()).append("\n");
+            boatList.append("PricePerHour: ").append(b.getPricePerHour()).append("\n");
+            boatList.append("Status: ").append(b.getStatus()).append("\n");
+            boatList.append("Category: ");
+            if (b.getCategory() != null) {
+                boatList.append(b.getCategory().getName());
+            } else {
+                boatList.append("null");
+            }
+            boatList.append("\n");
+            boatList.append("Description: ").append(b.getDescription()).append("\n\n");
+        }
+
+        String systemPrompt = """
+        You are an AI assistant that recommends the best boats for users based on their preferences.
+
+        You MUST return ONLY valid JSON.
+        No explanations, no extra text.
+
+        JSON format:
+        [
+          {
+            "boatId": <int>,
+            "score": <number between 0 and 5>,
+            "reason": "<short explanation why this boat fits>"
+          }
+        ]
+        """;
+
+        String userPrompt =
+                "User preferences: " + userPromptText + "\n\n" +
+                        "Here is the list of available boats:\n" +
+                        boatList;
+
+        try {
+            String aiResponse = aiClient.callOpenAi(systemPrompt, userPrompt);
+            List<BoatRecommendationDTO> result =
+                    objectMapper.readValue(aiResponse, new TypeReference<List<BoatRecommendationDTO>>() {});
+            return result;
+        } catch (Exception e) {
+            throw new ApiException("Failed to get AI boat recommendations: " + e.getMessage());
+        }
+    }
+
+
+
 
 
 }

@@ -38,6 +38,12 @@ public class AiController {
         return ResponseEntity.status(200).body(aiService.getTripsByFishType(fishType));
     }
 
+    @GetMapping("/review-analysis")
+    public ResponseEntity<?> analyzeReviews() {
+        return ResponseEntity.status(200).body(aiService.analyzeAllReviews());
+    }
+
+
 
 
 }

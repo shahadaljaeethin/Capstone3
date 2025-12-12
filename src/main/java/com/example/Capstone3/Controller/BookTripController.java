@@ -56,4 +56,10 @@ public class BookTripController {
     public ResponseEntity<?> getPendingRequest(@PathVariable Integer tripId) {
         return ResponseEntity.status(200).body(bookTripService.getPendingRequestForTrip(tripId));
     }
+
+    @GetMapping("/my-bookings/{customerId}")
+    public ResponseEntity<?> getMyBookings(@PathVariable Integer customerId){
+        return ResponseEntity.status(200).body(bookTripService.getMyBookings(customerId));
+    }
+
 }

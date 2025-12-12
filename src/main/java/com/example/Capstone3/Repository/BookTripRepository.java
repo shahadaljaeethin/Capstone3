@@ -11,5 +11,6 @@ public interface BookTripRepository extends JpaRepository<BookTrip, Integer> {
 
     List<BookTrip> findBookTripByStatusAndTrip_Id(String status,Integer tripId);
 
+    List<BookTrip> findAllByCustomer_Id(Integer customerId);
 
 }

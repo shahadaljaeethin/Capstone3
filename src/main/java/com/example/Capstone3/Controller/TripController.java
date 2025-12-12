@@ -50,7 +50,7 @@ public class TripController {
 
     @PostMapping("/request-customized-trip/{customerId}/{boatOwnerId}")
     public  ResponseEntity<?> customizedTrip(@PathVariable Integer customerId ,@PathVariable Integer boatOwnerId,@RequestBody @Valid Trip trip){
-        tripService.requestCustomizedTrip(customerId,boatOwnerId, trip);
+        tripService.requestCustomizedTrip(customerId, trip);
         return ResponseEntity.status(200).body(new ApiResponse("Request customized trip send to boat owner successfully"));
     }
 
@@ -122,4 +122,16 @@ public class TripController {
     public ResponseEntity<?> getTripByOwner(@PathVariable Integer owner){
         return ResponseEntity.status(200).body(tripService.getTribByOwner(owner));
     }
+
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<?> getTripsForOwner(@PathVariable Integer ownerId) {
+        return ResponseEntity.status(200).body(tripService.getTripsForOwner(ownerId));
+    }
+
+    @GetMapping("/nearest")
+    public ResponseEntity<?> getNearestTrips() {
+        return ResponseEntity.status(200).body(tripService.getNearestTrips());
+    }
+
+
 }

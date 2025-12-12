@@ -122,7 +122,7 @@ public class TripService {
 
     //===============================================================================================
 
-    public void requestCustomizedTrip(Integer customerId,Integer boatOwnerId ,Integer boatId ,Trip trip){
+    public void requestCustomizedTrip(Integer customerId, Trip trip){
         Customer customer = customerRepository.findCustomerById(customerId);
         BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(boatOwnerId);
         Boat boat = boatRepository.findBoatById(boatId);
@@ -486,4 +486,28 @@ public class TripService {
     public List<Trip> getTribByOwner(Integer owner){
         return tripRepository.findTripByBoatOwner_Id(owner);
     }
+
+
+    public List<Trip> getTripsForOwner(Integer ownerId) {
+        BoatOwner owner = boatOwnerRepository.findBoatOwnerById(ownerId);
+        if (owner == null) {
+            throw new ApiException("Boat owner not found");
+        }
+        List<Trip> trips = tripRepository.findAllByBoatOwner_Id(ownerId);
+        if (trips.isEmpty()) {
+            throw new ApiException("This owner has no trips");
+        }
+        return trips;
+    }
+
+    public List<Trip> getNearestTrips() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Trip> trips = tripRepository.findTop10ByStatusAndStartDateAfterOrderByStartDateAsc("Upcoming", now);
+        if (trips.isEmpty()) {
+            throw new ApiException("There are no upcoming trips");
+        }
+        return trips;
+    }
+
+
 }

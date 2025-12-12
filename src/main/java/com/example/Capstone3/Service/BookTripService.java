@@ -155,5 +155,16 @@ public class BookTripService {
 
 
 
-    public List<BookTrip> getPendingRequestForTrip(Integer tripId){return bookTripRepository.findBookTripByStatusAndTrip_Id("PENDING",tripId);}
+    public List<BookTrip> getPendingRequestForTrip(Integer tripId){
+        return bookTripRepository.findBookTripByStatusAndTrip_Id("PENDING",tripId);
+    }
+
+    public List<BookTrip> getMyBookings(Integer customerId) {
+        List<BookTrip> bookings = bookTripRepository.findAllByCustomer_Id(customerId);
+        if (bookings.isEmpty()) {
+            throw new ApiException("No bookings found for this customer");
+        }
+        return bookings;
+    }
+
 }
