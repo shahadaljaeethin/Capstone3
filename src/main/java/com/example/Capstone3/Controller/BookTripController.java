@@ -41,7 +41,7 @@ public class BookTripController {
                                            @PathVariable Integer bookTripId) {
 
         bookTripService.acceptBooking(ownerId, bookTripId);
-        return ResponseEntity.status(200).body("Booking accepted successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Booking accepted successfully"));
     }
 
     @PutMapping("/reject/{ownerId}/{bookTripId}")
@@ -49,7 +49,7 @@ public class BookTripController {
                                            @PathVariable Integer bookTripId) {
 
         bookTripService.rejectBooking(ownerId, bookTripId);
-        return ResponseEntity.status(200).body("Booking rejected successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Booking rejected successfully"));
     }
 
     @GetMapping("/pending of trip/{tripId}")

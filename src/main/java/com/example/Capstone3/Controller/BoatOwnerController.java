@@ -22,19 +22,19 @@ public class BoatOwnerController {
     @PostMapping("/add")
     public ResponseEntity<?> addOwner(@RequestBody BoatOwner boatOwner){
         boatOwnerService.addOwner(boatOwner);
-        return ResponseEntity.status(200).body("Owner added successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Owner added successfully"));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateOwner(@PathVariable Integer id, @RequestBody BoatOwner boatOwner){
         boatOwnerService.updateOwner(id, boatOwner);
-        return ResponseEntity.status(200).body("Owner updated successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Owner updated successfully"));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteOwner(@PathVariable Integer id){
         boatOwnerService.deleteOwner(id);
-        return ResponseEntity.status(200).body("Owner deleted successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Owner deleted successfully"));
     }
 
     @PutMapping("/activate-account/{adminId}/{boatOwnerId}")

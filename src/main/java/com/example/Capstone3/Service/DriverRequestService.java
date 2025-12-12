@@ -4,9 +4,11 @@ import com.example.Capstone3.Api.ApiException;
 import com.example.Capstone3.Model.BoatOwner;
 import com.example.Capstone3.Model.Driver;
 import com.example.Capstone3.Model.DriverRequest;
+import com.example.Capstone3.Model.Trip;
 import com.example.Capstone3.Repository.BoatOwnerRepository;
 import com.example.Capstone3.Repository.DriverRepository;
 import com.example.Capstone3.Repository.DriverRequestRepository;
+import com.example.Capstone3.Repository.TripRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,21 +21,30 @@ public class DriverRequestService {
     private final DriverRequestRepository driverRequestRepository;
     private final DriverRepository driverRepository;
     private final BoatOwnerRepository boatOwnerRepository;
+    private final TripRepository tripRepository;
 
     public List<DriverRequest> getDriverRequests() {
         return driverRequestRepository.findAll();
     }
 
-    public void addDriverRequest(Integer boatOwnerId, Integer driverId, DriverRequest driverRequest) {
+    public void addDriverRequest(Integer boatOwnerId, Integer driverId,Integer tripId ,DriverRequest driverRequest) {
         BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(boatOwnerId);
         Driver driver = driverRepository.findDriverById(driverId);
-        if (boatOwner == null || driver == null) {
+        Trip trip =  tripRepository.findTripById(tripId);
+        if (boatOwner == null || driver == null || trip ==null) {
             throw new ApiException("Boat owner or driver not found");
         }
+        if(!driver.getStatus().equals("available"))throw new ApiException("This driver is not available now");
+        if(boatOwner!=trip.getBoatOwner())throw new ApiException("unAuthorized trip owner");
+        if(trip.getDriver()!=null)throw new ApiException("this trip has a driver");
+
+
+        driverRequest.setTrip(trip);
         driverRequest.setOwner(boatOwner);
         driverRequest.setDriver(driver);
         driverRequest.setStatus("pending");
         driverRequestRepository.save(driverRequest);
+        //send mail
     }
 
     public void updateDriverRequest(Integer id, DriverRequest driverRequest) {
@@ -69,6 +80,12 @@ public class DriverRequestService {
         }
         request.setStatus("accept");
         driverRequestRepository.save(request);
+        driver.setStatus("busy");
+        driverRepository.save(driver);
+       request.getTrip().setDriver(driver);
+       tripRepository.save(request.getTrip());
+        //mail
+
     }
 
     public void apologizeRequest(Integer driverId, Integer requestId) {
@@ -85,5 +102,6 @@ public class DriverRequestService {
         }
         request.setStatus("apologize");
         driverRequestRepository.save(request);
+        //mail
     }
 }

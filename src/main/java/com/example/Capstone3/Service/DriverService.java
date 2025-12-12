@@ -49,7 +49,7 @@ public class DriverService {
         if(admin == null || driver == null){
             throw new ApiException("admin or driver not found");
         }
-        driver.setStatus("ACTIVE");
+        driver.setStatus("available");
         driverRepository.save(driver);
     }
 //      ========================================================================================================== E E P

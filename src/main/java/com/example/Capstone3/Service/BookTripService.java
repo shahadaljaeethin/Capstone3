@@ -39,6 +39,8 @@ public class BookTripService {
             throw new ApiException("You cannot book this trip");
         }
 
+        if(customer.getContact()==null) throw new ApiException("You must have emergency contact to book trip");
+
         BookTrip bookTrip = new BookTrip();
         bookTrip.setTrip(trip);
         bookTrip.setCustomer(customer);
@@ -80,10 +82,14 @@ public class BookTripService {
             throw new ApiException("Booking already accepted");
         }
 
+        Customer customer = bookTrip.getCustomer();
+        trip.setCustomer(customer);
+        tripRepository.save(trip);
+
         bookTrip.setStatus("ACCEPTED");
         bookTripRepository.save(bookTrip);
 
-        Customer customer = bookTrip.getCustomer();
+
 
         if (customer != null && customer.getEmail() != null) {
 

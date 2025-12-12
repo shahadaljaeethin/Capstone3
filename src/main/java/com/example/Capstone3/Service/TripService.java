@@ -53,8 +53,10 @@ public class TripService {
         Long DurationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
         if(DurationHours < 2) throw new ApiException("minimum duration for a trip is two hours");
 
-        //*****************************************************************
-        //********* set boat status to un available **********************
+
+        if(!boat.getStatus().equals("AVAILABLE")) throw new ApiException("This boat is unAvailable or in maintenance");
+        boat.setStatus("NOT_AVAILABLE");
+        boatRepository.save(boat);
 
 
         trip.setIsRequested(false);
@@ -120,17 +122,22 @@ public class TripService {
 
     //===============================================================================================
 
-    public void requestCustomizedTrip(Integer customerId,Integer boatOwnerId , Trip trip){
+    public void requestCustomizedTrip(Integer customerId,Integer boatOwnerId ,Integer boatId ,Trip trip){
         Customer customer = customerRepository.findCustomerById(customerId);
         BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(boatOwnerId);
-
-        if(customer == null || boatOwner == null){
-            throw  new ApiException("Customer or boat owner  not found");
+        Boat boat = boatRepository.findBoatById(boatId);
+        if(customer == null || boatOwner == null || boat ==null){
+            throw  new ApiException("Customer or boat owner or boat not found");
         }
+        trip.setBoat(boat);
+        System.out.println(trip.getBoat().getName());
         trip.setStatus("Request");
         trip.setIsRequested(true);
         trip.setCustomer(customer);
         trip.setBoatOwner(boatOwner);
+        Long DurationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
+        trip.setTotalPrice(DurationHours * trip.getBoat().getPricePerHour());
+
         tripRepository.save(trip);
 
         //Email
@@ -279,12 +286,15 @@ public class TripService {
         if (!trip.getStatus().equals("Ongoing")) throw new ApiException("trip is not in Ongoing state");
 
 
-        //*****************************************************************
-        //********* set boat status to available **********************
-
+        trip.getBoat().setStatus("AVAILABLE");
+        boatRepository.save(trip.getBoat());
 
         trip.setStatus("Completed");
         tripRepository.save(trip);
+
+        if(trip.getDriver()!=null)
+        {
+            trip.getDriver().setStatus("available"); driverRepository.save(trip.getDriver());}
 
         //stop the timer
         if (timers.get(trip) != null) {
@@ -322,7 +332,7 @@ public class TripService {
         for(Trip t:availableTrips){
             dtoTrips.add(toDTO(t));
         }
-
+        System.out.println("**********\n"+dtoTrips);
         // 2> send prompt
         String system = "I want you to recommend user suitable cruise of these trips, I want you to select the potential trip, so it could be one or more of potential trip that might help user " +
                 "if there is no trip that are potential i am looking for from given list, answer me with the word NONE as text. else reply me only with this JSON " +
@@ -353,6 +363,8 @@ public class TripService {
         if (trip == null) throw new ApiException("trip not found");
 
         Customer customer = trip.getCustomer();
+        if(customer==null||!trip.getStatus().equals("Ongoing")) throw new ApiException("This trip haven't started");
+
         Emergency emergency = emergencyRepository.findEmergencyByCustomer_Id(customer.getId());
         BoatOwner boatOwner = trip.getBoatOwner();
 

@@ -1,5 +1,6 @@
 package com.example.Capstone3.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -31,9 +32,14 @@ public class DriverRequest {
 
 
     @ManyToOne
+    @JsonIgnore
     private BoatOwner owner;
 
     @ManyToOne
     private Driver driver;
+
+    //*****NEW*******\\
+    @ManyToOne
+    private Trip trip;
 
 }

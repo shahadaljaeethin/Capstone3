@@ -65,7 +65,7 @@ public class Trip {
     @Column(columnDefinition = "varchar(10) ")
     private String status;
 
-    @Column(columnDefinition = "bigint") //int
+    @Column(columnDefinition = "bigint")
     private Long totalPrice;
 
 
@@ -94,4 +94,8 @@ public class Trip {
     @ManyToOne
     private  Customer customer;
 
+    //*****NEW*******\\
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "trip")
+    @JsonIgnore
+    private Set<DriverRequest> driverRequests;
 }

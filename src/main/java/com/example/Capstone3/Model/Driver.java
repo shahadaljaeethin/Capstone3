@@ -77,6 +77,7 @@ public class Driver {
 
     //-----------------------------------------------------------
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "driver")
+    @JsonIgnore
     private Set<Trip> trips;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "driver")

@@ -20,9 +20,9 @@ public class DriverRequestController {
         return ResponseEntity.status(200).body(driverRequestService.getDriverRequests());
     }
 
-    @PostMapping("/add/{boatOwnerId}/{driverId}")
-    public ResponseEntity<?> addDriverRequest(@PathVariable Integer boatOwnerId,@PathVariable Integer driverId, @RequestBody @Valid DriverRequest driverRequest){
-        driverRequestService.addDriverRequest(boatOwnerId,driverId,driverRequest);
+    @PostMapping("/add/{boatOwnerId}/{driverId}/{tripId}")
+    public ResponseEntity<?> addDriverRequest(@PathVariable Integer boatOwnerId,@PathVariable Integer driverId,@PathVariable Integer tripId ,@RequestBody @Valid DriverRequest driverRequest){
+        driverRequestService.addDriverRequest(boatOwnerId,driverId,tripId,driverRequest);
         return ResponseEntity.status(200).body(new ApiResponse("Driver request added successfully"));
     }
 
