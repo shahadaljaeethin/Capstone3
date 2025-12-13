@@ -122,7 +122,7 @@ public class TripService {
 
     //===============================================================================================
 
-    public void requestCustomizedTrip(Integer customerId, Trip trip){
+    public void requestCustomizedTrip(Integer customerId,Integer boatOwnerId ,Integer boatId ,Trip trip){
         Customer customer = customerRepository.findCustomerById(customerId);
         BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(boatOwnerId);
         Boat boat = boatRepository.findBoatById(boatId);
