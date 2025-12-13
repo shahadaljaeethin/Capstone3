@@ -250,7 +250,7 @@ public class TripService {
         long delayMillis = Duration.between(now, end).toSeconds();
         System.out.println("end: "+trip.getEndDate()+"\nNow: "+now+"\n"+"Duration.between(now, end) sec: "+Duration.between(now, end).toSeconds()+"\nduration.between(now, end): "+Duration.between(now, end));
         System.out.println("***: "+delayMillis);
-       // if (delayMillis <= 0) throw new ApiException("time invalid");
+        if (delayMillis <= 0) throw new ApiException("trip is expired");
 
         timer.schedule(new TimerTask() {
             @Override
