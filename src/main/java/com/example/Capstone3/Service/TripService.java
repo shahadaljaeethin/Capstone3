@@ -248,14 +248,12 @@ public class TripService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime end = trip.getEndDate();
         long delayMillis = Duration.between(now, end).toSeconds();
-        System.out.println("end: "+trip.getEndDate()+"\nNow: "+now+"\n"+"Duration.between(now, end) sec: "+Duration.between(now, end).toSeconds()+"\nduration.between(now, end): "+Duration.between(now, end));
-        System.out.println("***: "+delayMillis);
+
         if (delayMillis <= 0) throw new ApiException("trip is expired");
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("Times out"); //**   delete after testing
                 //call emergency
                 sendEmergency(tripId,false);
             }
@@ -323,14 +321,7 @@ public class TripService {
         ObjectMapper mapper = new ObjectMapper();
         try {
              String tripsJson = mapper.writeValueAsString(dtoTrips);
-            System.out.println("**********\n" + tripsJson);
 
-
-
-
-
-
-        System.out.println("**********\n"+dtoTrips);
         // 2> send prompt
         String system = "I want you to recommend user suitable cruise of these trips, I want you to select the potential trip, so it could be one or more of potential trip that might help user " +
                 "if there is no trip that are potential i am looking for from given list, answer me with the word NONE as text. else reply me only with this JSON " +
