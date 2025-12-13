@@ -2,7 +2,6 @@ package com.example.Capstone3.Controller;
 import com.example.Capstone3.Api.ApiResponse;
 import com.example.Capstone3.Model.Trip;
 import com.example.Capstone3.Service.TripService;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
