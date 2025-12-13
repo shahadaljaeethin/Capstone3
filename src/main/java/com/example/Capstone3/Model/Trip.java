@@ -94,7 +94,7 @@ public class Trip {
     @ManyToOne
     private  Customer customer;
 
-    //*****NEW*******\\
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "trip")
     @JsonIgnore
     private Set<DriverRequest> driverRequests;

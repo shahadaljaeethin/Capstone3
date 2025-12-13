@@ -44,7 +44,7 @@ public class DriverRequestService {
         driverRequest.setDriver(driver);
         driverRequest.setStatus("pending");
         driverRequestRepository.save(driverRequest);
-        //send mail
+
     }
 
     public void updateDriverRequest(Integer id, DriverRequest driverRequest) {
@@ -84,7 +84,7 @@ public class DriverRequestService {
         driverRepository.save(driver);
        request.getTrip().setDriver(driver);
        tripRepository.save(request.getTrip());
-        //mail
+
 
     }
 
@@ -102,6 +102,6 @@ public class DriverRequestService {
         }
         request.setStatus("apologize");
         driverRequestRepository.save(request);
-        //mail
+
     }
 }

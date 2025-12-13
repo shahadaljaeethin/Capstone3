@@ -34,6 +34,8 @@ public class BookTripService {
             throw new ApiException("Trip or customer not found");
         }
 
+        if(trip.getCustomer()!=null)  throw new ApiException("this Trip is booked for someone else");
+
         if (trip.getStatus().equalsIgnoreCase("Ongoing") ||
                 trip.getStatus().equalsIgnoreCase("Completed")) {
             throw new ApiException("You cannot book this trip");

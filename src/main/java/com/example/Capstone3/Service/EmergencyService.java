@@ -36,7 +36,9 @@ public class EmergencyService {
             throw new ApiException("emergency contact not found");
         }
         emergency.setName(edit.getName());
-        emergency.setRel(edit.getRel());
+        emergency.setRelative(edit.getRelative());
+        emergency.setEmail(edit.getEmail());
+        emergency.setPhoneNumber(edit.getPhoneNumber());
         emergencyRepository.save(emergency);
     }
 

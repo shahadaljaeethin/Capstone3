@@ -46,7 +46,6 @@ public class Boat {
     private String status;
 
 
-
     @NotEmpty(message = "*enter description")
     @Size(max = 300, message = "*description too long (max 300 characters)")
     @Column(columnDefinition = "varchar(300) not null")

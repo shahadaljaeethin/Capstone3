@@ -38,7 +38,7 @@ public class DriverRequest {
     @ManyToOne
     private Driver driver;
 
-    //*****NEW*******\\
+
     @ManyToOne
     private Trip trip;
 
