@@ -380,9 +380,9 @@ public class TripService {
         BoatOwner boatOwner = trip.getBoatOwner();
 
         String tripInfo = "Trip Title: "+trip.getTitle() +"\n"+
-         "Start Location: "+trip.getStartLocation()+" : "+geocodingService.getLocationCoordinates(trip.getStartLocation())+"\n" +
-         "End Location: "+trip.getEndLocation()+"\n : "+geocodingService.getLocationCoordinates(trip.getEndLocation())+
-          "Destination: "+trip.getDestinationLocation()+" : "+geocodingService.getLocationCoordinates(trip.getDestinationLocation())+"\n" +
+         "Start Location: "+trip.getStartLocation()+" : "+geocodingService.getLocationCoordinates(trip.getStartLocation())+"\n\n" +
+         "End Location: "+trip.getEndLocation()+" : "+geocodingService.getLocationCoordinates(trip.getEndLocation())+"\n\n"+
+          "Destination: "+trip.getDestinationLocation()+" : "+geocodingService.getLocationCoordinates(trip.getDestinationLocation())+"\n\n" +
            "expected Start and End time : "+trip.getStartDate()+"-"+trip.getEndDate()+"\n" +
             "Trip Type: "+trip.getTripType();
 
@@ -394,7 +394,7 @@ public class TripService {
          "\nwhere **"+emergType+"**\nTrip info :\n"+tripInfo;
 
         String contactMessageTitle = "*EMERGENCY CASE* for your relative "+customer.getName();
-        String contactMessageBody = "Dear "+emergency.getName()+", you recived this message as an emergency contact for "+customer.getName()+"." +
+        String contactMessageBody = "Dear "+emergency.getName()+", we are Ebhaar website, a system to manage trips and boats.\n\n you received this message as an emergency contact for "+customer.getName()+"." +
          "\n They went on sea trip and "+emergType+"\nTrip info :\n"+tripInfo;
 
 
