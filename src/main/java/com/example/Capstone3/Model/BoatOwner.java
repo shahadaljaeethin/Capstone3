@@ -74,6 +74,7 @@ public class BoatOwner {
 
     //---------------------------------------------------
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "boatOwner")
+    @JsonIgnore
     private Set<Trip> tripSet;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "owner")

@@ -33,7 +33,7 @@ public class Review {
     @Column(columnDefinition = "varchar(300) not null")
     private String comment;
 
-    @Column(columnDefinition = "datetime not null")
+    @Column(columnDefinition = "datetime")
     private LocalDateTime creatAt = LocalDateTime.now();
 
     @ManyToOne

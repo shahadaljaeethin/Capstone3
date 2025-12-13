@@ -20,4 +20,5 @@ public interface TripRepository extends JpaRepository<Trip, Integer> {
 
     List<Trip> findTop10ByStatusAndStartDateAfterOrderByStartDateAsc(String status, LocalDateTime startDate);
 
+    List<Trip> findTripByBoatOwner_IdAndCustomer_IdAndStatus(Integer owner,Integer customer,String status);
 }

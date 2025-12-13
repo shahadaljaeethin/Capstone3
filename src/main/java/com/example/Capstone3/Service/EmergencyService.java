@@ -26,6 +26,7 @@ public class EmergencyService {
         if (customer == null) {
             throw new ApiException("customer not found");
         }
+        if(customer.getContact()!=null) throw new ApiException("you have added contact emergency before");
         emergency.setCustomer(customer);
         emergencyRepository.save(emergency);
     }

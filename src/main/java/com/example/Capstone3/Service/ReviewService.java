@@ -7,9 +7,11 @@ import com.example.Capstone3.Model.Review;
 import com.example.Capstone3.Repository.BoatOwnerRepository;
 import com.example.Capstone3.Repository.CustomerRepository;
 import com.example.Capstone3.Repository.ReviewRepository;
+import com.example.Capstone3.Repository.TripRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,6 +21,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final BoatOwnerRepository boatOwnerRepository;
     private final CustomerRepository customerRepository;
+    private final TripRepository tripRepository;
 
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
@@ -35,10 +38,10 @@ public class ReviewService {
         if (customer == null) {
             throw new ApiException("Customer not found");
         }
-
+        if(tripRepository.findTripByBoatOwner_IdAndCustomer_IdAndStatus(ownerId,customerId,"Completed").isEmpty()) throw new ApiException("you haven't completed any trip with this owner");
         review.setBoatOwner(owner);
         review.setCustomer(customer);
-
+        review.setCreatAt(LocalDateTime.now());
         reviewRepository.save(review);
     }
 

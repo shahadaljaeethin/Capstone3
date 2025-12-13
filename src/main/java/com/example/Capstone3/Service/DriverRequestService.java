@@ -12,6 +12,7 @@ import com.example.Capstone3.Repository.TripRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -78,13 +79,17 @@ public class DriverRequestService {
         if (!"pending".equals(request.getStatus())) {
             throw new ApiException("this request has state of " + request.getStatus() + " already");
         }
-        request.setStatus("accept");
-        driverRequestRepository.save(request);
-        driver.setStatus("busy");
-        driverRepository.save(driver);
-       request.getTrip().setDriver(driver);
-       tripRepository.save(request.getTrip());
+        Long durationHours = Duration.between(request.getTrip().getStartDate(), request.getTrip().getEndDate()).toHours();
+        request.getTrip().setTotalPrice(request.getTrip().getTotalPrice() + durationHours * driver.getHourlyWage());
 
+
+        request.setStatus("accept");
+        driver.setStatus("busy");
+       request.getTrip().setDriver(driver);
+
+        driverRepository.save(driver);
+        driverRequestRepository.save(request);
+       tripRepository.save(request.getTrip());
 
     }
 

@@ -51,8 +51,8 @@ public class TripService {
 
         if(trip.getEndDate().isBefore(trip.getStartDate())) throw new ApiException("*end date must be after start date");
         Long DurationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
-        if(DurationHours < 2) throw new ApiException("minimum duration for a trip is two hours");
-
+       // if(DurationHours < 2) throw new ApiException("minimum duration for a trip is two hours");
+        //COMMENT FOR TEST
 
         if(!boat.getStatus().equals("AVAILABLE")) throw new ApiException("This boat is unAvailable or in maintenance");
         boat.setStatus("NOT_AVAILABLE");
@@ -68,32 +68,20 @@ public class TripService {
         tripRepository.save(trip);
     }
 
-    public void assignDriverToTrip(Integer driverId, Integer tripId) {
-        Driver driver = driverRepository.findDriverById(driverId);
-        Trip trip = tripRepository.findTripById(tripId);
-        if (driver == null || trip == null) {
-            throw new ApiException("Driver or Trip not found");
-        }
-
-        trip.setDriver(driver);
-        Long durationHours = Duration.between(trip.getStartDate(), trip.getEndDate()).toHours();
-        trip.setTotalPrice(trip.getTotalPrice() + durationHours * driver.getHourlyWage());
-        tripRepository.save(trip);
-    }
 
     public void updateTrip(Integer id, Trip trip) {
         Trip oldTrip = tripRepository.findTripById(id);
         if (oldTrip == null) {
             throw new ApiException("Trip not found");
         }
-        Boat boat = boatRepository.findBoatById(trip.getBoat().getId());
-        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(trip.getBoatOwner().getId());
-        if (boat == null || boatOwner == null) {
-            throw new ApiException("Boat or boat owner not found");
-        }
-        if (!boatOwner.getBoats().contains(trip.getBoat())) {
-            throw new ApiException("The boat owner cannot add this trip because he does not have the appropriate boat");
-        }
+//        Boat boat = boatRepository.findBoatById(trip.getBoat().getId());
+//        BoatOwner boatOwner = boatOwnerRepository.findBoatOwnerById(trip.getBoatOwner().getId());
+//        if (boat == null || boatOwner == null) {
+//            throw new ApiException("Boat or boat owner not found");
+//        }
+//        if (!boatOwner.getBoats().contains(trip.getBoat())) {
+//            throw new ApiException("The boat owner cannot add this trip because he does not have the appropriate boat");
+//        }
 
         oldTrip.setTitle(trip.getTitle());
         oldTrip.setTripType(trip.getTripType());
@@ -103,11 +91,8 @@ public class TripService {
         oldTrip.setStartLocation(trip.getStartLocation());
         oldTrip.setEndLocation(trip.getEndLocation());
         oldTrip.setDestinationLocation(trip.getDestinationLocation());
-        oldTrip.setStatus(trip.getStatus());
-        oldTrip.setTotalPrice(trip.getTotalPrice());
-        oldTrip.setDriver(trip.getDriver());
-        oldTrip.setBoat(trip.getBoat());
-        oldTrip.setBoatOwner(trip.getBoatOwner());
+
+
         tripRepository.save(oldTrip);
 
     }
@@ -169,6 +154,7 @@ public class TripService {
         if(!trip.getBoatOwner().equals(boatOwner)){
             throw new ApiException("Boat owner unauthorized to approve this trip");
         }
+        if(!trip.getIsRequested()) throw new ApiException("this is not customized trip");
         trip.setStatus("Upcoming");
         customer.getMyTrips().add(trip);
         tripRepository.save(trip);
@@ -251,7 +237,7 @@ public class TripService {
             throw new ApiException("Authorization failed: this trip belongs to another owner"); //review this line
 
         if (!trip.getStatus().equals("Upcoming")) throw new ApiException("trip is not in Upcoming state");
-
+        if(trip.getCustomer()==null)throw new ApiException("there is no customer in this trip");
         trip.setStatus("Ongoing");
         tripRepository.save(trip);
 //start timer to date
@@ -261,8 +247,10 @@ public class TripService {
         //calculate timer seconds from endDate
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime end = trip.getEndDate();
-        long delayMillis = Duration.between(now, end).toMillis();
-        if (delayMillis <= 0) throw new ApiException("");
+        long delayMillis = Duration.between(now, end).toSeconds();
+        System.out.println("end: "+trip.getEndDate()+"\nNow: "+now+"\n"+"Duration.between(now, end) sec: "+Duration.between(now, end).toSeconds()+"\nduration.between(now, end): "+Duration.between(now, end));
+        System.out.println("***: "+delayMillis);
+       // if (delayMillis <= 0) throw new ApiException("time invalid");
 
         timer.schedule(new TimerTask() {
             @Override
